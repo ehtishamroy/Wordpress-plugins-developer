@@ -4,7 +4,7 @@ Tags: booking, mentor, appointments, programmes, youth
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,16 @@ See **GYD Booking → Shortcodes & Help** in wp-admin for the full guide.
 * `[gyd_book_button program="..." text="Book Now" style="primary|navy|outline"]` — a single button.
 
 == Changelog ==
+
+= 1.0.3 =
+* Theme-proof styling: the booking UI is no longer restyled by Elementor / Hello
+  Elementor. Buttons, links, headings, labels and form fields keep the GYD brand
+  (navy / red / gold / cream) even when the theme's reset.css or the Elementor
+  kit styles `button`, `[type=submit]`, `a`, `h2-h5`, `label` or `input`.
+* Every button and link now has explicit hover / focus / active states, so the
+  theme's `button:focus` pink/blue background can no longer leak through.
+* Proper, explicit padding and spacing on programme cards, mentor cards, the
+  selected-programme box, the booking form and the popup.
 
 = 1.0.2 =
 * Booking now opens in a popup on ANY link to the booking page — including a
