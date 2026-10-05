@@ -49,7 +49,7 @@ class GYDB_Ajax {
 			$mentors_html = GYDB_Shortcodes::notice( __( 'No mentors are available for this programme yet.', 'gyd-booking' ) );
 		} else {
 			foreach ( $mentors as $mentor ) {
-				$mentors_html .= GYDB_Shortcodes::render_mentor_card( $mentor, $program, false );
+				$mentors_html .= GYDB_Shortcodes::render_mentor_card( $mentor, $program, 'inline' );
 			}
 		}
 

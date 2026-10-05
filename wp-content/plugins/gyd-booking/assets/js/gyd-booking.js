@@ -11,7 +11,6 @@
 		Object.keys( data || {} ).forEach( function ( key ) {
 			body.append( key, data[ key ] );
 		} );
-
 		return fetch( GYDB.ajaxUrl, {
 			method: 'POST',
 			credentials: 'same-origin',
@@ -22,6 +21,8 @@
 	}
 
 	function initApp( app ) {
+		var inModal = !! app.closest( '.gydb-modal-overlay' );
+
 		var stages = {
 			pick: app.querySelector( '.gydb-stage-pick' ),
 			mentors: app.querySelector( '.gydb-stage-mentors' ),
@@ -33,10 +34,10 @@
 		var contextBox = app.querySelector( '.gydb-program-context' );
 		var form = app.querySelector( '.gydb-form' );
 		var slotsBox = app.querySelector( '.gydb-slots' );
-		var dateInput = app.querySelector( '#gydb-date' );
-		var timeInput = app.querySelector( '#gydb-time' );
-		var programIdInput = app.querySelector( '#gydb-program-id' );
-		var mentorIdInput = app.querySelector( '#gydb-mentor-id' );
+		var dateInput = app.querySelector( '.gydb-date' );
+		var timeInput = app.querySelector( '.gydb-time' );
+		var programIdInput = app.querySelector( '.gydb-program-id' );
+		var mentorIdInput = app.querySelector( '.gydb-mentor-id' );
 		var errorBox = app.querySelector( '.gydb-form-error' );
 
 		function showStage( name ) {
@@ -45,29 +46,26 @@
 					stages[ key ].hidden = key !== name;
 				}
 			} );
-			// Scroll the app into view on stage change (but not on first paint).
-			if ( app.dataset.booted ) {
+			if ( app.dataset.booted && ! inModal ) {
 				app.scrollIntoView( { behavior: 'smooth', block: 'start' } );
+			} else if ( inModal ) {
+				var box = app.closest( '.gydb-modal' );
+				if ( box ) { box.scrollTop = 0; }
 			}
 			app.dataset.booted = '1';
 		}
 
 		function setLoading( on ) {
-			if ( loading ) {
-				loading.hidden = ! on;
-			}
+			if ( loading ) { loading.hidden = ! on; }
 		}
 
 		function showError( msg ) {
-			if ( ! errorBox ) {
-				return;
-			}
+			if ( ! errorBox ) { return; }
 			errorBox.textContent = msg;
 			errorBox.hidden = ! msg;
 		}
 
-		/* ----- Programme selection (picker mode) ----- */
-		function loadProgram( programId ) {
+		function loadProgram( programId, autoMentorId ) {
 			setLoading( true );
 			showError( '' );
 			ajax( 'get_program_view', { program_id: programId } ).then( function ( res ) {
@@ -77,14 +75,16 @@
 					return;
 				}
 				app.dataset.program = res.data.program_id;
-				if ( contextBox ) {
-					contextBox.innerHTML = res.data.context_html;
-				}
-				if ( mentorTarget ) {
-					mentorTarget.innerHTML = res.data.mentors_html;
-				}
-				if ( programIdInput ) {
-					programIdInput.value = res.data.program_id;
+				if ( contextBox ) { contextBox.innerHTML = res.data.context_html; }
+				if ( mentorTarget ) { mentorTarget.innerHTML = res.data.mentors_html; }
+				if ( programIdInput ) { programIdInput.value = res.data.program_id; }
+
+				if ( autoMentorId ) {
+					var card = mentorTarget && mentorTarget.querySelector( '.gydb-mentor-card[data-mentor-id="' + autoMentorId + '"]' );
+					if ( card ) {
+						pickMentor( card );
+						return;
+					}
 				}
 				showStage( 'mentors' );
 			} ).catch( function () {
@@ -93,17 +93,12 @@
 			} );
 		}
 
-		/* ----- Mentor selection ----- */
 		function pickMentor( card ) {
-			if ( ! card ) {
-				return;
-			}
-			var mentorId = card.getAttribute( 'data-mentor-id' );
-			var name = card.getAttribute( 'data-mentor-name' ) || '';
+			if ( ! card ) { return; }
 			var roleEl = card.querySelector( '.gydb-mentor-role' );
 			var photoEl = card.querySelector( '.gydb-mentor-photo' );
 
-			mentorIdInput.value = mentorId;
+			mentorIdInput.value = card.getAttribute( 'data-mentor-id' );
 
 			var sMentor = app.querySelector( '.gydb-summary-mentor' );
 			var sRole = app.querySelector( '.gydb-summary-role' );
@@ -111,12 +106,11 @@
 			var sPhoto = app.querySelector( '.gydb-summary-photo' );
 			var progTitleEl = app.querySelector( '.gydb-sel-prog h4' );
 
-			if ( sMentor ) { sMentor.textContent = name; }
+			if ( sMentor ) { sMentor.textContent = card.getAttribute( 'data-mentor-name' ) || ''; }
 			if ( sRole ) { sRole.textContent = roleEl ? roleEl.textContent : ''; }
 			if ( sProg && progTitleEl ) { sProg.textContent = progTitleEl.textContent; }
-			if ( sPhoto && photoEl ) { sPhoto.style.backgroundImage = photoEl.style.backgroundImage; }
+			if ( sPhoto ) { sPhoto.style.backgroundImage = ( photoEl && photoEl.style.backgroundImage ) || ''; }
 
-			// Reset scheduling.
 			if ( dateInput ) { dateInput.value = ''; }
 			if ( timeInput ) { timeInput.value = ''; }
 			if ( slotsBox ) {
@@ -126,14 +120,11 @@
 			showStage( 'form' );
 		}
 
-		/* ----- Slots ----- */
 		function loadSlots() {
 			var mentorId = mentorIdInput.value;
 			var date = dateInput.value;
 			if ( timeInput ) { timeInput.value = ''; }
-			if ( ! mentorId || ! date ) {
-				return;
-			}
+			if ( ! mentorId || ! date ) { return; }
 			slotsBox.innerHTML = '<p class="gydb-slots-hint">' + ( i18n.loading || '' ) + '</p>';
 			ajax( 'get_slots', { mentor_id: mentorId, date: date } ).then( function ( res ) {
 				if ( ! res || ! res.success ) {
@@ -159,15 +150,14 @@
 			} );
 		}
 
-		/* ----- Submit ----- */
 		function submit( e ) {
 			e.preventDefault();
 			showError( '' );
 
-			var name = form.querySelector( '#gydb-name' );
-			var email = form.querySelector( '#gydb-email' );
-			var phone = form.querySelector( '#gydb-phone' );
-			var message = form.querySelector( '#gydb-message' );
+			var name = form.querySelector( '.gydb-name' );
+			var email = form.querySelector( '.gydb-email' );
+			var phone = form.querySelector( '.gydb-phone' );
+			var message = form.querySelector( '.gydb-message' );
 
 			[ name, email ].forEach( function ( el ) {
 				el.classList.toggle( 'gydb-invalid', ! el.value.trim() );
@@ -204,10 +194,7 @@
 
 				if ( ! res || ! res.success ) {
 					showError( ( res && res.data && res.data.message ) || i18n.genericError );
-					// A taken slot — refresh availability.
-					if ( dateInput.value ) {
-						loadSlots();
-					}
+					if ( dateInput.value ) { loadSlots(); }
 					return;
 				}
 
@@ -228,7 +215,6 @@
 			} );
 		}
 
-		/* ----- Event delegation ----- */
 		app.addEventListener( 'click', function ( e ) {
 			var pick = e.target.closest( '.gydb-pick-program' );
 			if ( pick && app.contains( pick ) ) {
@@ -259,15 +245,13 @@
 				return;
 			}
 			if ( e.target.closest( '.gydb-book-another' ) ) {
-				// Return to the mentor list for the same programme.
 				showStage( 'mentors' );
 				return;
 			}
 		} );
 
-		// Keyboard support for programme picker cards.
 		app.addEventListener( 'keydown', function ( e ) {
-			if ( ( e.key === 'Enter' || e.key === ' ' ) ) {
+			if ( e.key === 'Enter' || e.key === ' ' ) {
 				var pick = e.target.closest( '.gydb-pick-program' );
 				if ( pick && app.contains( pick ) ) {
 					e.preventDefault();
@@ -276,29 +260,84 @@
 			}
 		} );
 
-		if ( dateInput ) {
-			dateInput.addEventListener( 'change', loadSlots );
-		}
-		if ( form ) {
-			form.addEventListener( 'submit', submit );
-		}
+		if ( dateInput ) { dateInput.addEventListener( 'change', loadSlots ); }
+		if ( form ) { form.addEventListener( 'submit', submit ); }
 
-		/* ----- Initial stage ----- */
-		var hasProgram = app.getAttribute( 'data-program' );
-		if ( hasProgram ) {
-			showStage( 'mentors' );
-			// Preselect a mentor if requested (?gyd_mentor=).
-			var wantMentor = app.getAttribute( 'data-mentor' );
-			if ( wantMentor && wantMentor !== '0' ) {
-				var card = app.querySelector( '.gydb-mentor-card[data-mentor-id="' + wantMentor + '"]' );
-				if ( card ) {
-					pickMentor( card );
+		// Public entry point used by the popup modal.
+		app.gydbOpenFor = function ( programId, mentorId ) {
+			showError( '' );
+			if ( String( app.dataset.program ) === String( programId ) && mentorTarget && mentorTarget.children.length ) {
+				// Same programme already loaded — reuse it.
+				if ( mentorId ) {
+					var existing = mentorTarget.querySelector( '.gydb-mentor-card[data-mentor-id="' + mentorId + '"]' );
+					if ( existing ) { pickMentor( existing ); return; }
 				}
+				showStage( 'mentors' );
+				return;
 			}
-		} else {
-			showStage( 'pick' );
+			loadProgram( programId, mentorId );
+		};
+
+		// Initial stage (inline app only; the modal starts hidden/empty).
+		if ( ! inModal ) {
+			var hasProgram = app.getAttribute( 'data-program' );
+			if ( hasProgram ) {
+				showStage( 'mentors' );
+				var wantMentor = app.getAttribute( 'data-mentor' );
+				if ( wantMentor && wantMentor !== '0' ) {
+					var card = app.querySelector( '.gydb-mentor-card[data-mentor-id="' + wantMentor + '"]' );
+					if ( card ) { pickMentor( card ); }
+				}
+			} else if ( stages.pick ) {
+				showStage( 'pick' );
+			}
 		}
 	}
+
+	/* ----- Popup modal open/close ----- */
+	function openModal( programId, mentorId ) {
+		var overlay = document.getElementById( 'gydb-modal' );
+		if ( ! overlay ) { return; }
+		var app = overlay.querySelector( '.gydb-app' );
+		overlay.hidden = false;
+		document.body.classList.add( 'gydb-modal-open' );
+		if ( app && typeof app.gydbOpenFor === 'function' ) {
+			app.gydbOpenFor( programId, mentorId || '' );
+		}
+		var closeBtn = overlay.querySelector( '.gydb-modal-close' );
+		if ( closeBtn ) { closeBtn.focus(); }
+	}
+
+	function closeModal() {
+		var overlay = document.getElementById( 'gydb-modal' );
+		if ( ! overlay ) { return; }
+		overlay.hidden = true;
+		document.body.classList.remove( 'gydb-modal-open' );
+	}
+
+	document.addEventListener( 'click', function ( e ) {
+		var trigger = e.target.closest( '.gydb-open-modal' );
+		if ( trigger ) {
+			e.preventDefault();
+			openModal( trigger.getAttribute( 'data-program-id' ), trigger.getAttribute( 'data-mentor-id' ) );
+			return;
+		}
+		if ( e.target.closest( '.gydb-modal-close' ) ) {
+			closeModal();
+			return;
+		}
+		// Click on the dark backdrop (outside the modal box) closes it.
+		if ( e.target.classList && e.target.classList.contains( 'gydb-modal-overlay' ) ) {
+			closeModal();
+		}
+	} );
+
+	document.addEventListener( 'keydown', function ( e ) {
+		if ( e.key === 'Escape' ) {
+			var overlay = document.getElementById( 'gydb-modal' );
+			if ( overlay && ! overlay.hidden ) { closeModal(); }
+		}
+	} );
 
 	document.addEventListener( 'DOMContentLoaded', function () {
 		Array.prototype.forEach.call( document.querySelectorAll( '.gydb-app' ), initApp );

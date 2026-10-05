@@ -31,6 +31,10 @@
 .gyd-booking *::before,
 .gyd-booking *::after { box-sizing: border-box; }
 
+/* The hidden attribute must always win over component display rules. */
+.gyd-booking [hidden],
+.gyd-booking.gydb-modal-overlay[hidden] { display: none !important; }
+
 .gyd-booking h2,
 .gyd-booking h3,
 .gyd-booking h4,
@@ -208,12 +212,44 @@
 
 /* Notices + spinner ---------------------------------------------------- */
 .gydb-notice { background: var(--gyd-cream); border: 1px solid var(--gyd-line); border-radius: 8px; padding: 16px 18px; color: var(--gyd-muted); font-size: 14px; }
-.gydb-loading { position: fixed; inset: 0; background: rgba(10,37,64,0.35); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.gydb-loading { position: fixed; inset: 0; background: rgba(10,37,64,0.35); display: flex; align-items: center; justify-content: center; z-index: 100001; }
 .gydb-spinner { width: 42px; height: 42px; border: 4px solid rgba(255,255,255,0.4); border-top-color: var(--gyd-gold); border-radius: 50%; animation: gydb-spin 0.8s linear infinite; }
 @keyframes gydb-spin { to { transform: rotate(360deg); } }
 
 .gydb-stage { margin-top: 8px; }
 .gydb-stage[hidden] { display: none; }
+
+/* ===== POPUP MODAL ===== */
+body.gydb-modal-open { overflow: hidden; }
+.gydb-modal-overlay {
+  position: fixed; inset: 0; z-index: 100000;
+  background: rgba(10,37,64,0.55);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 40px 16px; overflow-y: auto;
+}
+.gydb-modal {
+  position: relative; background: var(--gyd-cream);
+  width: 100%; max-width: 760px; margin: auto;
+  border-radius: var(--gyd-radius); box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+  padding: 32px;
+}
+.gydb-modal-close {
+  position: absolute; top: 12px; right: 14px;
+  width: 36px; height: 36px; border-radius: 50%; font-size: 24px; line-height: 1;
+  color: var(--gyd-navy); background: var(--gyd-white); border: 1px solid var(--gyd-line);
+  cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+}
+.gydb-modal-close:hover { background: var(--gyd-red); color: var(--gyd-white); border-color: var(--gyd-red); }
+.gydb-modal .gydb-stage { margin-top: 0; }
+.gydb-modal .gydb-form-card,
+.gydb-modal .gydb-success-card { border: none; padding: 0; max-width: none; }
+.gydb-modal .gydb-success-card { text-align: center; padding: 24px 0; }
+.gydb-modal .gydb-mentor-grid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 680px) {
+  .gydb-modal { padding: 24px 18px; }
+  .gydb-modal-overlay { padding: 20px 10px; }
+  .gydb-modal .gydb-mentor-grid { grid-template-columns: 1fr; }
+}
 
 /* Responsive ----------------------------------------------------------- */
 @media (max-width: 1024px) {
