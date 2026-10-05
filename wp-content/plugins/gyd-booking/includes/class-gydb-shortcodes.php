@@ -8,9 +8,16 @@
  *   [gyd_booking]       The full inline booking experience (dedicated page).
  *   [gyd_book_button]   A "Book Now" button that opens the popup.
  *
- * Booking happens in a popup modal on the same page — no navigation. Every
- * trigger is also a real link to the booking page, so it still works without
- * JavaScript (progressive enhancement).
+ * Booking flow (the same in the page and in the popup):
+ *   1. Choose a programme   - already done when the visitor clicked Book Now
+ *                             on a programme, so the list is NOT shown again.
+ *   2. Read programme info  - what the programme is about.
+ *   3. Pick a mentor        - photo + bio for every mentor.
+ *   4. Schedule your time   - programme info + the chosen mentor's photo & bio
+ *                             beside the date / time / details form.
+ *
+ * Every trigger is also a real link to the booking page, so it still works
+ * without JavaScript (progressive enhancement).
  *
  * @package GYD_Booking
  */
@@ -219,7 +226,7 @@ class GYDB_Shortcodes {
 	}
 
 	/**
-	 * A single mentor card.
+	 * A single mentor card: photo, name, role and bio.
 	 *
 	 * @param WP_Post $mentor  Mentor.
 	 * @param WP_Post $program Programme context.
@@ -229,7 +236,7 @@ class GYDB_Shortcodes {
 	 */
 	public static function render_mentor_card( $mentor, $program, $mode = 'inline' ) {
 		$role  = get_post_meta( $mentor->ID, '_gyd_role', true );
-		$bio   = get_post_meta( $mentor->ID, '_gyd_bio', true );
+		$bio   = GYDB_Helpers::get_mentor_bio( $mentor );
 		$photo = GYDB_Helpers::get_mentor_photo_url( $mentor->ID, 'medium' );
 		$label = __( 'View schedule', 'gyd-booking' );
 
@@ -258,24 +265,47 @@ class GYDB_Shortcodes {
 	}
 
 	/**
-	 * Programme context box (matches .sel-prog from book.html).
+	 * Programme information: what the programme is about.
+	 *
+	 * Shows the programme number, title, focus area, tagline, and the
+	 * "About this programme" text (the full description, or the short one
+	 * when no full description was written).
+	 *
+	 * @param WP_Post $program Programme.
+	 * @return string
 	 */
 	public static function render_program_context( $program ) {
 		$number   = GYDB_Helpers::get_program_number( $program );
 		$category = get_post_meta( $program->ID, '_gyd_category', true );
-		$desc     = GYDB_Helpers::get_program_short_desc( $program );
+		$tagline  = get_post_meta( $program->ID, '_gyd_tagline', true );
+
+		// One description, not two: the full "About this programme" text when
+		// there is one, otherwise the short description.
+		$about = GYDB_Helpers::get_program_about( $program );
+		$desc  = '' === $about ? GYDB_Helpers::get_program_short_desc( $program ) : '';
 
 		ob_start();
 		?>
 		<div class="gydb-sel-prog">
 			<div class="gydb-sel-label">
 				<?php
-				/* translators: %s: programme number */
-				echo esc_html( sprintf( __( 'Selected programme · Programme %s', 'gyd-booking' ), $number ) );
+				if ( '' !== $number ) {
+					/* translators: %s: programme number */
+					echo esc_html( sprintf( __( 'Programme %s', 'gyd-booking' ), $number ) );
+				} else {
+					esc_html_e( 'Your programme', 'gyd-booking' );
+				}
 				?>
 			</div>
-			<h4><?php echo esc_html( $program->post_title ); ?><?php echo $category ? ' — ' . esc_html( $category ) : ''; ?></h4>
-			<?php if ( $desc ) : ?><p><?php echo esc_html( $desc ); ?></p><?php endif; ?>
+			<h4><?php echo esc_html( $program->post_title ); ?></h4>
+			<?php if ( $category ) : ?><div class="gydb-sel-category"><?php echo esc_html( $category ); ?></div><?php endif; ?>
+			<?php if ( $tagline ) : ?><div class="gydb-sel-tagline"><?php echo esc_html( $tagline ); ?></div><?php endif; ?>
+			<?php if ( $about || $desc ) : ?>
+				<div class="gydb-sel-about">
+					<h5><?php esc_html_e( 'About this programme', 'gyd-booking' ); ?></h5>
+					<?php echo $about ? wp_kses_post( $about ) : '<p>' . esc_html( $desc ) . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				</div>
+			<?php endif; ?>
 		</div>
 		<?php
 		return ob_get_clean();
@@ -305,6 +335,13 @@ class GYDB_Shortcodes {
 
 		$preselect_mentor = isset( $_GET['gyd_mentor'] ) ? absint( wp_unslash( $_GET['gyd_mentor'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
+		/*
+		 * The programme list is only offered when the visitor did NOT arrive
+		 * with a programme (e.g. a generic "Book Now"). When they already chose
+		 * one on the Programmes page, it is not shown again.
+		 */
+		$has_picker = ( '1' === (string) $atts['show_picker'] ) && ! $program;
+
 		list( $min_date, $max_date ) = self::date_window();
 
 		ob_start();
@@ -315,16 +352,16 @@ class GYDB_Shortcodes {
 			data-min-date="<?php echo esc_attr( $min_date ); ?>"
 			data-max-date="<?php echo esc_attr( $max_date ); ?>">
 
-			<?php if ( '1' === $atts['show_steps'] ) : ?>
-				<?php echo self::render_steps(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php if ( '1' === (string) $atts['show_steps'] ) : ?>
+				<?php echo self::render_steps( false ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<?php endif; ?>
 
-			<?php if ( '1' === $atts['show_picker'] ) : ?>
-			<div class="gydb-stage gydb-stage-pick"<?php echo $program ? ' hidden' : ''; ?>>
+			<?php if ( $has_picker ) : ?>
+			<div class="gydb-stage gydb-stage-pick">
 				<div class="gydb-marker"><div class="gydb-marker-body">
 					<span class="gydb-eyebrow"><?php esc_html_e( 'Start here', 'gyd-booking' ); ?></span>
 					<h2><?php esc_html_e( 'Pick your programme.', 'gyd-booking' ); ?></h2>
-					<p class="gydb-lead"><?php esc_html_e( 'Choose a programme to see available mentors and schedule.', 'gyd-booking' ); ?></p>
+					<p class="gydb-lead"><?php esc_html_e( 'Choose a programme to see what it is about, meet its mentors and book a time.', 'gyd-booking' ); ?></p>
 				</div></div>
 				<div class="gydb-card-grid gydb-cols-3">
 					<?php foreach ( GYDB_Helpers::get_programs() as $p ) : ?>
@@ -332,6 +369,8 @@ class GYDB_Shortcodes {
 					<?php endforeach; ?>
 				</div>
 			</div>
+			<?php elseif ( ! $program ) : ?>
+				<?php echo self::notice( __( 'Please choose a programme to start booking.', 'gyd-booking' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<?php endif; ?>
 
 			<?php
@@ -347,7 +386,7 @@ class GYDB_Shortcodes {
 					}
 				}
 			}
-			echo self::render_mentors_stage( $program, $mentors_html, ( '1' === $atts['show_picker'] ), ! $program ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo self::render_mentors_stage( $program, $mentors_html, $has_picker, ! $program ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo self::render_form_stage( $min_date, $max_date, $program ? $program->ID : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo self::render_success_stage(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo self::render_loading(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -362,11 +401,11 @@ class GYDB_Shortcodes {
 	 * ================================================================== */
 
 	/**
-	 * Mentors stage shell.
+	 * Mentors stage: programme info, then every mentor with photo + bio.
 	 *
 	 * @param WP_Post|null $program       Programme (null for the empty modal).
 	 * @param string       $mentors_html  Prerendered mentor cards.
-	 * @param bool         $with_back     Show "choose a different programme".
+	 * @param bool         $with_back     Offer "choose a different programme".
 	 * @param bool         $hidden        Start hidden.
 	 * @return string
 	 */
@@ -389,7 +428,9 @@ class GYDB_Shortcodes {
 	}
 
 	/**
-	 * Booking form stage.
+	 * Schedule stage: the programme info and the chosen mentor's photo + bio
+	 * sit beside the date / time / details form. JavaScript fills the side
+	 * column from the selected mentor card.
 	 *
 	 * @param string     $min_date   Y-m-d.
 	 * @param string     $max_date   Y-m-d.
@@ -400,59 +441,70 @@ class GYDB_Shortcodes {
 		ob_start();
 		?>
 		<div class="gydb-stage gydb-stage-form" hidden>
-			<p class="gydb-back"><button type="button" class="gydb-link-btn gydb-back-to-mentors">← <?php esc_html_e( 'Back to mentors', 'gyd-booking' ); ?></button></p>
-			<div class="gydb-form-card">
-				<div class="gydb-booking-summary">
-					<div class="gydb-summary-photo"></div>
-					<div>
-						<div class="gydb-summary-prog"></div>
-						<h4 class="gydb-summary-mentor"></h4>
-						<div class="gydb-summary-role"></div>
+			<p class="gydb-back"><button type="button" class="gydb-link-btn gydb-back-to-mentors">← <?php esc_html_e( 'Choose a different mentor', 'gyd-booking' ); ?></button></p>
+
+			<div class="gydb-schedule-layout">
+				<aside class="gydb-schedule-side">
+					<div class="gydb-side-program"></div>
+					<div class="gydb-mentor-profile">
+						<div class="gydb-profile-photo"></div>
+						<h4 class="gydb-profile-name"></h4>
+						<div class="gydb-profile-role"></div>
+						<p class="gydb-profile-bio"></p>
+					</div>
+				</aside>
+
+				<div class="gydb-schedule-main">
+					<div class="gydb-form-card">
+						<div class="gydb-form-head">
+							<h3><?php esc_html_e( 'Schedule your session', 'gyd-booking' ); ?></h3>
+							<p class="gydb-form-sub"></p>
+						</div>
+
+						<form class="gydb-form" novalidate>
+							<div class="gydb-form-field">
+								<label><?php esc_html_e( 'Choose a date', 'gyd-booking' ); ?> <span class="gydb-req">*</span></label>
+								<input type="date" class="gydb-date" name="gydb_date" min="<?php echo esc_attr( $min_date ); ?>" max="<?php echo esc_attr( $max_date ); ?>" required>
+							</div>
+
+							<div class="gydb-form-field">
+								<label><?php esc_html_e( 'Available times', 'gyd-booking' ); ?> <span class="gydb-req">*</span></label>
+								<div class="gydb-slots" aria-live="polite">
+									<p class="gydb-slots-hint"><?php esc_html_e( 'Select a date to see available times.', 'gyd-booking' ); ?></p>
+								</div>
+								<input type="hidden" class="gydb-time" name="gydb_time" value="">
+							</div>
+
+							<div class="gydb-form-row">
+								<div class="gydb-form-field">
+									<label><?php esc_html_e( 'Your name', 'gyd-booking' ); ?> <span class="gydb-req">*</span></label>
+									<input type="text" class="gydb-name" name="gydb_name" required>
+								</div>
+								<div class="gydb-form-field">
+									<label><?php esc_html_e( 'Email', 'gyd-booking' ); ?> <span class="gydb-req">*</span></label>
+									<input type="email" class="gydb-email" name="gydb_email" required>
+								</div>
+							</div>
+
+							<div class="gydb-form-field">
+								<label><?php esc_html_e( 'Phone (optional)', 'gyd-booking' ); ?></label>
+								<input type="tel" class="gydb-phone" name="gydb_phone">
+							</div>
+
+							<div class="gydb-form-field">
+								<label><?php esc_html_e( 'What would you like to work on? (optional)', 'gyd-booking' ); ?></label>
+								<textarea class="gydb-message" name="gydb_message" rows="4"></textarea>
+							</div>
+
+							<input type="hidden" class="gydb-program-id" name="gydb_program_id" value="<?php echo esc_attr( $program_id ); ?>">
+							<input type="hidden" class="gydb-mentor-id" name="gydb_mentor_id" value="">
+
+							<div class="gydb-form-error" role="alert" hidden></div>
+
+							<button type="submit" class="gydb-btn gydb-btn-primary gydb-submit"><?php esc_html_e( 'Confirm booking', 'gyd-booking' ); ?></button>
+						</form>
 					</div>
 				</div>
-
-				<form class="gydb-form" novalidate>
-					<div class="gydb-form-field">
-						<label><?php esc_html_e( 'Choose a date', 'gyd-booking' ); ?> <span class="gydb-req">*</span></label>
-						<input type="date" class="gydb-date" name="gydb_date" min="<?php echo esc_attr( $min_date ); ?>" max="<?php echo esc_attr( $max_date ); ?>" required>
-					</div>
-
-					<div class="gydb-form-field">
-						<label><?php esc_html_e( 'Available times', 'gyd-booking' ); ?> <span class="gydb-req">*</span></label>
-						<div class="gydb-slots" aria-live="polite">
-							<p class="gydb-slots-hint"><?php esc_html_e( 'Select a date to see available times.', 'gyd-booking' ); ?></p>
-						</div>
-						<input type="hidden" class="gydb-time" name="gydb_time" value="">
-					</div>
-
-					<div class="gydb-form-row">
-						<div class="gydb-form-field">
-							<label><?php esc_html_e( 'Your name', 'gyd-booking' ); ?> <span class="gydb-req">*</span></label>
-							<input type="text" class="gydb-name" name="gydb_name" required>
-						</div>
-						<div class="gydb-form-field">
-							<label><?php esc_html_e( 'Email', 'gyd-booking' ); ?> <span class="gydb-req">*</span></label>
-							<input type="email" class="gydb-email" name="gydb_email" required>
-						</div>
-					</div>
-
-					<div class="gydb-form-field">
-						<label><?php esc_html_e( 'Phone (optional)', 'gyd-booking' ); ?></label>
-						<input type="tel" class="gydb-phone" name="gydb_phone">
-					</div>
-
-					<div class="gydb-form-field">
-						<label><?php esc_html_e( 'What would you like to work on? (optional)', 'gyd-booking' ); ?></label>
-						<textarea class="gydb-message" name="gydb_message" rows="4"></textarea>
-					</div>
-
-					<input type="hidden" class="gydb-program-id" name="gydb_program_id" value="<?php echo esc_attr( $program_id ); ?>">
-					<input type="hidden" class="gydb-mentor-id" name="gydb_mentor_id" value="">
-
-					<div class="gydb-form-error" role="alert" hidden></div>
-
-					<button type="submit" class="gydb-btn gydb-btn-primary gydb-submit"><?php esc_html_e( 'Confirm booking', 'gyd-booking' ); ?></button>
-				</form>
 			</div>
 		</div>
 		<?php
@@ -487,25 +539,31 @@ class GYDB_Shortcodes {
 	}
 
 	/**
-	 * The four-step "how booking works" flow.
+	 * The four booking steps. They double as a live progress tracker: the
+	 * script marks each step done / active / upcoming as the visitor moves on.
+	 *
+	 * @param bool $compact Compact tracker (popup): no heading, no step text.
+	 * @return string
 	 */
-	public static function render_steps() {
+	public static function render_steps( $compact = false ) {
 		$steps = array(
 			array( __( 'Choose a programme', 'gyd-booking' ), __( 'Pick the programme that fits what you want to work on.', 'gyd-booking' ) ),
-			array( __( 'Read programme info', 'gyd-booking' ), __( 'See a short description of the programme above the schedule.', 'gyd-booking' ) ),
+			array( __( 'Read programme info', 'gyd-booking' ), __( 'See what the programme is about before you book.', 'gyd-booking' ) ),
 			array( __( 'Pick a mentor', 'gyd-booking' ), __( 'Browse mentor bios and photos — find someone whose experience fits.', 'gyd-booking' ) ),
 			array( __( 'Schedule your time', 'gyd-booking' ), __( 'Choose a date and time. You’ll get a confirmation by email.', 'gyd-booking' ) ),
 		);
 
 		ob_start();
 		?>
-		<div class="gydb-marker"><div class="gydb-marker-body">
-			<span class="gydb-eyebrow"><?php esc_html_e( 'How booking works', 'gyd-booking' ); ?></span>
-			<h2><?php esc_html_e( 'Four simple steps.', 'gyd-booking' ); ?></h2>
-		</div></div>
-		<div class="gydb-step-flow">
-			<?php foreach ( $steps as $step ) : ?>
-				<div class="gydb-step">
+		<?php if ( ! $compact ) : ?>
+			<div class="gydb-marker"><div class="gydb-marker-body">
+				<span class="gydb-eyebrow"><?php esc_html_e( 'How booking works', 'gyd-booking' ); ?></span>
+				<h2><?php esc_html_e( 'Four simple steps.', 'gyd-booking' ); ?></h2>
+			</div></div>
+		<?php endif; ?>
+		<div class="gydb-step-flow<?php echo $compact ? ' gydb-steps-compact' : ''; ?>">
+			<?php foreach ( $steps as $i => $step ) : ?>
+				<div class="gydb-step" data-step="<?php echo esc_attr( $i + 1 ); ?>">
 					<h5><?php echo esc_html( $step[0] ); ?></h5>
 					<p><?php echo esc_html( $step[1] ); ?></p>
 				</div>
@@ -549,6 +607,10 @@ class GYDB_Shortcodes {
 	 * booking page — including a "Book Now" item in the theme's navigation
 	 * menu — can open the popup instead of navigating away. Disable with:
 	 *   add_filter( 'gydb_enable_popup', '__return_false' );
+	 *
+	 * The programme list inside the popup is only shown when it is opened
+	 * WITHOUT a programme; opening it from a programme skips straight to
+	 * the programme info and its mentors.
 	 */
 	public static function maybe_render_modal() {
 		/**
@@ -577,6 +639,8 @@ class GYDB_Shortcodes {
 			<div class="gydb-modal" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Book a session', 'gyd-booking' ); ?>">
 				<button type="button" class="gydb-modal-close" aria-label="<?php esc_attr_e( 'Close', 'gyd-booking' ); ?>">&times;</button>
 				<div class="gydb-modal-content gydb-app" data-program="" data-mentor="" data-min-date="<?php echo esc_attr( $min_date ); ?>" data-max-date="<?php echo esc_attr( $max_date ); ?>">
+
+					<?php echo self::render_steps( true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 					<div class="gydb-stage gydb-stage-pick" hidden>
 						<div class="gydb-marker"><div class="gydb-marker-body">

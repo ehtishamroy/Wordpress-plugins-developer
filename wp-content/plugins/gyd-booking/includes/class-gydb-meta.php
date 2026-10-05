@@ -100,7 +100,7 @@ class GYDB_Meta {
 		</p>
 		<p>
 			<label for="gyd_short_desc"><strong><?php esc_html_e( 'Short description', 'gyd-booking' ); ?></strong></label><br>
-			<textarea id="gyd_short_desc" name="gyd_short_desc" rows="3" class="large-text" placeholder="<?php esc_attr_e( 'One or two sentences shown above the schedule on the booking page.', 'gyd-booking' ); ?>"><?php echo esc_textarea( $short_desc ); ?></textarea>
+			<textarea id="gyd_short_desc" name="gyd_short_desc" rows="3" class="large-text" placeholder="<?php esc_attr_e( 'One or two sentences. Used on the booking page only when the main editor above is empty.', 'gyd-booking' ); ?>"><?php echo esc_textarea( $short_desc ); ?></textarea>
 		</p>
 		<p>
 			<label>
@@ -108,7 +108,7 @@ class GYDB_Meta {
 				<?php esc_html_e( 'Mark this programme as “New” (adds a NEW badge).', 'gyd-booking' ); ?>
 			</label>
 		</p>
-		<p class="description"><?php esc_html_e( 'Tip: the large editor above is the full programme description; the Featured Image is used for the programme card.', 'gyd-booking' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Tip: the large editor above is the full “About this programme” text shown on the booking page (what the programme is about). The Featured Image is used for the programme card.', 'gyd-booking' ); ?></p>
 		<?php
 	}
 

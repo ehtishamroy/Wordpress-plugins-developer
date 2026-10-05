@@ -231,17 +231,34 @@
 .gyd-booking .gydb-mentor-card .gydb-btn { margin-top: auto; }
 .gyd-booking .gydb-mentors-head { margin-top: 8px; margin-bottom: 20px; }
 
-/* ---------- Step flow ---------- */
+/* ---------- Step flow (also a live progress tracker) ---------- */
 .gyd-booking .gydb-step-flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; counter-reset: gydstep; margin: 24px 0 40px; }
-.gyd-booking .gydb-step { background: var(--gyd-white); border: 1px solid var(--gyd-line); border-radius: var(--gyd-radius); padding: 24px !important; counter-increment: gydstep; }
+.gyd-booking .gydb-step { background: var(--gyd-white); border: 1px solid var(--gyd-line); border-radius: var(--gyd-radius); padding: 24px !important; counter-increment: gydstep; transition: border-color 0.2s, box-shadow 0.2s, opacity 0.2s; }
 .gyd-booking .gydb-step::before { content: counter(gydstep, decimal-leading-zero); font-family: var(--gyd-display); font-size: 36px; font-weight: 700; color: var(--gyd-red); line-height: 1; margin-bottom: 12px; display: block; }
 .gyd-booking .gydb-step p { font-size: 13px; color: var(--gyd-muted); margin: 0; }
+/* States set by the script as the visitor moves through the booking */
+.gyd-booking .gydb-step.is-upcoming { opacity: 0.55; }
+.gyd-booking .gydb-step.is-active { border-color: var(--gyd-red); box-shadow: 0 0 0 3px rgba(228,30,32,0.10); }
+.gyd-booking .gydb-step.is-done { border-color: var(--gyd-navy); }
+.gyd-booking .gydb-step.is-done::before { content: "\2713"; color: var(--gyd-navy); }
 
-/* ---------- Selected-programme context box ---------- */
-.gyd-booking .gydb-sel-prog { background: var(--gyd-cream); border: 1px solid var(--gyd-line); border-radius: 8px; padding: 22px 24px !important; margin-bottom: 24px; }
+/* Compact tracker (popup): one row, number + title, no description */
+.gyd-booking .gydb-step-flow.gydb-steps-compact { gap: 10px; margin: 0 0 24px; padding-right: 44px; }
+.gyd-booking .gydb-steps-compact .gydb-step { display: flex; align-items: center; gap: 10px; padding: 10px 14px !important; }
+.gyd-booking .gydb-steps-compact .gydb-step::before { font-size: 20px; margin: 0; flex-shrink: 0; }
+.gyd-booking .gydb-steps-compact .gydb-step h5 { margin: 0 !important; font-size: 13px !important; line-height: 1.2 !important; }
+.gyd-booking .gydb-steps-compact .gydb-step p { display: none; }
+
+/* ---------- Programme information (what the programme is about) ---------- */
+.gyd-booking .gydb-sel-prog { background: var(--gyd-white); border: 1px solid var(--gyd-line); border-left: 4px solid var(--gyd-red); border-radius: 8px; padding: 22px 24px !important; margin-bottom: 28px; }
 .gyd-booking .gydb-sel-label { font-family: var(--gyd-display); font-size: 11px; letter-spacing: 0.15em; color: var(--gyd-red); text-transform: uppercase; margin-bottom: 8px; }
-.gyd-booking .gydb-sel-prog h4 { margin: 0 0 8px !important; }
-.gyd-booking .gydb-sel-prog p { font-size: 14px; color: var(--gyd-muted); margin: 0; }
+.gyd-booking .gydb-sel-prog h4 { margin: 0 0 6px !important; font-size: 22px !important; }
+.gyd-booking .gydb-sel-category { font-family: var(--gyd-display); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gyd-muted); margin-bottom: 4px; }
+.gyd-booking .gydb-sel-tagline { font-family: var(--gyd-display); font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gyd-navy); margin-bottom: 12px; }
+.gyd-booking .gydb-sel-about { border-top: 1px solid var(--gyd-line); margin-top: 14px; padding-top: 14px; }
+.gyd-booking .gydb-sel-about h5 { margin: 0 0 8px !important; font-size: 13px !important; letter-spacing: 0.08em !important; text-transform: uppercase !important; color: var(--gyd-red) !important; }
+.gyd-booking .gydb-sel-about p { font-size: 15px; color: var(--gyd-ink); margin: 0 0 10px; }
+.gyd-booking .gydb-sel-about p:last-child { margin-bottom: 0; }
 
 .gyd-booking .gydb-change-prog { margin: 24px 0 0; }
 
@@ -250,11 +267,24 @@
    ============================================================ */
 .gyd-booking .gydb-back { margin: 0 0 16px; }
 .gyd-booking .gydb-form-card { background: var(--gyd-white); border: 1px solid var(--gyd-line); border-radius: var(--gyd-radius); padding: 32px !important; max-width: 680px; }
-.gyd-booking .gydb-booking-summary { display: flex; align-items: center; gap: 16px; padding-bottom: 20px; margin-bottom: 24px; border-bottom: 1px solid var(--gyd-line); }
-.gyd-booking .gydb-summary-photo { width: 64px; height: 64px; border-radius: 50%; background: var(--gyd-cream-2) center/cover no-repeat; flex-shrink: 0; border: 2px solid var(--gyd-cream); }
-.gyd-booking .gydb-summary-prog { font-family: var(--gyd-display); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gyd-red); margin-bottom: 2px; }
-.gyd-booking .gydb-summary-mentor { margin: 0 !important; }
-.gyd-booking .gydb-summary-role { font-size: 13px; color: var(--gyd-muted); }
+
+/* Schedule screen: programme info + mentor photo/bio beside the form.
+   Flex-wrap (not media queries) so it also stacks inside narrow columns. */
+.gyd-booking .gydb-schedule-layout { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start; }
+.gyd-booking .gydb-schedule-side { flex: 1 1 280px; min-width: 0; }
+.gyd-booking .gydb-schedule-main { flex: 2 1 400px; min-width: 0; }
+.gyd-booking .gydb-schedule-main .gydb-form-card { max-width: none; }
+.gyd-booking .gydb-schedule-side .gydb-sel-prog { margin-bottom: 20px; }
+
+.gyd-booking .gydb-mentor-profile { background: var(--gyd-white); border: 1px solid var(--gyd-line); border-radius: var(--gyd-radius); padding: 24px !important; text-align: center; }
+.gyd-booking .gydb-profile-photo { width: 112px; height: 112px; border-radius: 50%; margin: 0 auto 14px; border: 3px solid var(--gyd-cream); background: var(--gyd-cream-2) center/cover no-repeat; }
+.gyd-booking .gydb-profile-name { margin: 0 0 4px !important; }
+.gyd-booking .gydb-profile-role { font-family: var(--gyd-display); font-size: 12px; color: var(--gyd-red); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+.gyd-booking .gydb-profile-bio { font-size: 14px; color: var(--gyd-muted); margin: 0; }
+
+.gyd-booking .gydb-form-head { padding-bottom: 16px; margin-bottom: 22px; border-bottom: 1px solid var(--gyd-line); }
+.gyd-booking .gydb-form-head h3 { margin: 0 0 4px !important; }
+.gyd-booking .gydb-form-sub { font-size: 14px; color: var(--gyd-muted); margin: 0; }
 
 .gyd-booking .gydb-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .gyd-booking .gydb-form-field { margin: 0 0 18px; }
@@ -339,7 +369,7 @@ body.gydb-modal-open { overflow: hidden; }
 }
 .gyd-booking .gydb-modal {
   position: relative; background: var(--gyd-cream);
-  width: 100%; max-width: 760px; margin: auto;
+  width: 100%; max-width: 980px; margin: auto;
   border-radius: var(--gyd-radius); box-shadow: 0 30px 80px rgba(0,0,0,0.4);
   padding: 36px 32px 32px !important;
 }
@@ -352,13 +382,11 @@ body.gydb-modal-open { overflow: hidden; }
   border: 1px solid var(--gyd-line) !important; box-shadow: none !important;
   cursor: pointer; transition: all 0.15s;
 }
-.gyd-booking .gydb-modal-close:hover,
-.gyd-booking .gydb-modal-close:focus { background: var(--gyd-red) !important; color: var(--gyd-white) !important; border-color: var(--gyd-red) !important; }
+.gyd-booking .gydb-modal-close:focus { background: var(--gyd-white) !important; color: var(--gyd-navy) !important; border-color: var(--gyd-line) !important; }
+.gyd-booking .gydb-modal-close:hover { background: var(--gyd-red) !important; color: var(--gyd-white) !important; border-color: var(--gyd-red) !important; }
 .gyd-booking .gydb-modal .gydb-stage { margin-top: 0; }
-.gyd-booking .gydb-modal .gydb-form-card,
-.gyd-booking .gydb-modal .gydb-success-card { border: none; padding: 0 !important; max-width: none; }
-.gyd-booking .gydb-modal .gydb-success-card { text-align: center; padding: 24px 0 !important; }
-.gyd-booking .gydb-modal .gydb-mentor-grid { grid-template-columns: repeat(2, 1fr); }
+.gyd-booking .gydb-modal .gydb-success-card { border: none; max-width: none; text-align: center; padding: 24px 0 !important; }
+.gyd-booking .gydb-modal .gydb-mentor-grid { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
 
 /* ============================================================
    RESPONSIVE
@@ -372,7 +400,10 @@ body.gydb-modal-open { overflow: hidden; }
   .gyd-booking .gydb-cols-2,
   .gyd-booking .gydb-cols-3,
   .gyd-booking .gydb-cols-4 { grid-template-columns: 1fr; }
-  .gyd-booking .gydb-step-flow { grid-template-columns: 1fr; }
+  .gyd-booking .gydb-step-flow { grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0 28px; }
+  .gyd-booking .gydb-step { padding: 14px !important; }
+  .gyd-booking .gydb-step::before { font-size: 24px; margin-bottom: 6px; }
+  .gyd-booking .gydb-step p { display: none; }
   .gyd-booking .gydb-program-row { grid-template-columns: 1fr; gap: 12px; padding: 28px 0; }
   .gyd-booking .gydb-big-num { font-size: 46px; }
   .gyd-booking .gydb-form-row { grid-template-columns: 1fr; }
@@ -380,6 +411,5 @@ body.gydb-modal-open { overflow: hidden; }
   .gyd-booking.gydb-modal-overlay { padding: 20px 10px; }
   .gyd-booking .gydb-modal { padding: 28px 18px 22px !important; }
   .gyd-booking .gydb-modal .gydb-mentor-grid { grid-template-columns: 1fr; }
-  /* keep the modal's flush form/success card flush on small screens too */
-  .gyd-booking .gydb-modal .gydb-form-card { padding: 0 !important; }
+  .gyd-booking .gydb-step-flow.gydb-steps-compact { grid-template-columns: repeat(2, 1fr); padding-right: 0; margin-top: 28px; }
 }

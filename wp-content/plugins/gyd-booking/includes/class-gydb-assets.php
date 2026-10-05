@@ -76,6 +76,7 @@ class GYDB_Assets {
 				'bookingPageId'  => $booking_page_id,
 				'i18n'           => array(
 					'selectDate'    => __( 'Select a date to see available times.', 'gyd-booking' ),
+					'bookingWith'   => __( 'Booking with', 'gyd-booking' ),
 					'noSlots'       => __( 'No times available on this day. Please choose another date.', 'gyd-booking' ),
 					'loading'       => __( 'Loading…', 'gyd-booking' ),
 					'chooseSlot'    => __( 'Please choose a time slot.', 'gyd-booking' ),

@@ -269,6 +269,55 @@ class GYDB_Helpers {
 	}
 
 	/**
+	 * Mentor bio: the dedicated bio field, falling back to a trimmed version
+	 * of the editor content so a bio typed in either place is shown.
+	 *
+	 * @param WP_Post|int $mentor Mentor.
+	 * @return string Plain text.
+	 */
+	public static function get_mentor_bio( $mentor ) {
+		$mentor = get_post( $mentor );
+		if ( ! $mentor ) {
+			return '';
+		}
+		$bio = trim( (string) get_post_meta( $mentor->ID, '_gyd_bio', true ) );
+		if ( '' !== $bio ) {
+			return $bio;
+		}
+		return wp_trim_words( wp_strip_all_tags( strip_shortcodes( (string) $mentor->post_content ) ), 60 );
+	}
+
+	/**
+	 * The long "About this programme" text: the programme's main editor
+	 * content, cleaned for safe output. Empty when there is none, or when it
+	 * only repeats the short description.
+	 *
+	 * @param WP_Post|int $program Programme.
+	 * @return string HTML (already wpautop'd + kses'd), or ''.
+	 */
+	public static function get_program_about( $program ) {
+		$program = get_post( $program );
+		if ( ! $program ) {
+			return '';
+		}
+
+		// Drop block-editor comment delimiters and shortcodes.
+		$content = preg_replace( '/<!--.*?-->/s', '', (string) $program->post_content );
+		$content = trim( wp_kses_post( strip_shortcodes( (string) $content ) ) );
+		$plain   = trim( wp_strip_all_tags( $content ) );
+		if ( '' === $plain ) {
+			return '';
+		}
+
+		$short = trim( (string) get_post_meta( $program->ID, '_gyd_short_desc', true ) );
+		if ( '' !== $short && $plain === trim( wp_strip_all_tags( $short ) ) ) {
+			return '';
+		}
+
+		return wpautop( $content );
+	}
+
+	/**
 	 * Format a stored 24h time (HH:MM[:SS]) using the site time format.
 	 *
 	 * @param string $time Time string.

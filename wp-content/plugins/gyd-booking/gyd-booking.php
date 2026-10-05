@@ -3,7 +3,7 @@
  * Plugin Name:       GYD Booking — Programmes & Mentors
  * Plugin URI:        https://gydnetwork.org.uk
  * Description:        A complete, dynamic booking system for Global Youth Development. Create programmes and mentors (with photos & bios), let young people pick a programme, choose a mentor and book a 1-to-1 session — all styled to match the GYD navy / red / gold / cream brand. Display anywhere with shortcodes.
- * Version:           1.0.3
+ * Version:           1.0.4
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Global Youth Development Organisation CIC
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /* -------------------------------------------------------------------------
  * Constants
  * ---------------------------------------------------------------------- */
-define( 'GYDB_VERSION', '1.0.3' );
+define( 'GYDB_VERSION', '1.0.4' );
 define( 'GYDB_DB_VERSION', '1.0.0' );
 define( 'GYDB_FILE', __FILE__ );
 define( 'GYDB_PATH', plugin_dir_path( __FILE__ ) );

@@ -4,7 +4,7 @@ Tags: booking, mentor, appointments, programmes, youth
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,22 @@ See **GYD Booking → Shortcodes & Help** in wp-admin for the full guide.
 * `[gyd_book_button program="..." text="Book Now" style="primary|navy|outline"]` — a single button.
 
 == Changelog ==
+
+= 1.0.4 =
+* Booking flow reworked to match the client's brief. After "Book Now" the visitor
+  sees: the four steps (now a live progress tracker), what the programme is about,
+  every mentor with picture + bio, and the schedule.
+* The programme list is no longer shown again once a programme was chosen - not in
+  the page and not in the popup. It only appears when booking is opened without a
+  programme (e.g. a generic "Book Now" menu link).
+* The schedule screen now keeps the programme information AND the chosen mentor's
+  photo and bio beside the date / time / details form.
+* The popup now shows the four-step tracker too.
+* "About this programme" shows the programme's full description (main editor), or
+  the short description when there is no full one - never both.
+* A mentor bio typed in the main editor is used when the Bio field is empty.
+* Popup close button no longer stays red after it receives focus.
+* Phones: the step tracker is a compact 2x2 grid.
 
 = 1.0.3 =
 * Theme-proof styling: the booking UI is no longer restyled by Elementor / Hello
