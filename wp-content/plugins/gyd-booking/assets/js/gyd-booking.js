@@ -46,17 +46,19 @@
 					stages[ key ].hidden = key !== name;
 				}
 			} );
-			if ( app.dataset.booted && ! inModal ) {
-				app.scrollIntoView( { behavior: 'smooth', block: 'start' } );
-			} else if ( inModal ) {
+			if ( inModal ) {
 				var box = app.closest( '.gydb-modal' );
 				if ( box ) { box.scrollTop = 0; }
+			} else if ( app.dataset.booted ) {
+				app.scrollIntoView( { behavior: 'smooth', block: 'start' } );
 			}
 			app.dataset.booted = '1';
 		}
 
 		function setLoading( on ) {
-			if ( loading ) { loading.hidden = ! on; }
+			if ( ! loading ) { return; }
+			loading.hidden = ! on;
+			loading.classList.toggle( 'is-active', !! on );
 		}
 
 		function showError( msg ) {
@@ -65,13 +67,15 @@
 			errorBox.hidden = ! msg;
 		}
 
-		function loadProgram( programId, autoMentorId ) {
+		function loadProgram( program, autoMentorId ) {
 			setLoading( true );
 			showError( '' );
-			ajax( 'get_program_view', { program_id: programId } ).then( function ( res ) {
+			ajax( 'get_program_view', { program: program } ).then( function ( res ) {
 				setLoading( false );
 				if ( ! res || ! res.success ) {
-					alert( ( res && res.data && res.data.message ) || i18n.genericError );
+					if ( stages.pick ) {
+						showStage( 'pick' );
+					}
 					return;
 				}
 				app.dataset.program = res.data.program_id;
@@ -89,7 +93,8 @@
 				showStage( 'mentors' );
 			} ).catch( function () {
 				setLoading( false );
-				alert( i18n.genericError );
+				showError( i18n.genericError );
+				if ( stages.pick ) { showStage( 'pick' ); }
 			} );
 		}
 
@@ -263,11 +268,21 @@
 		if ( dateInput ) { dateInput.addEventListener( 'change', loadSlots ); }
 		if ( form ) { form.addEventListener( 'submit', submit ); }
 
-		// Public entry point used by the popup modal.
-		app.gydbOpenFor = function ( programId, mentorId ) {
+		// Entry point used by the popup.
+		app.gydbOpenFor = function ( program, mentorId ) {
 			showError( '' );
-			if ( String( app.dataset.program ) === String( programId ) && mentorTarget && mentorTarget.children.length ) {
-				// Same programme already loaded — reuse it.
+
+			if ( ! program ) {
+				// No programme chosen yet — start at the picker.
+				if ( stages.pick ) {
+					showStage( 'pick' );
+				} else {
+					showStage( 'mentors' );
+				}
+				return;
+			}
+
+			if ( String( app.dataset.program ) === String( program ) && mentorTarget && mentorTarget.children.length ) {
 				if ( mentorId ) {
 					var existing = mentorTarget.querySelector( '.gydb-mentor-card[data-mentor-id="' + mentorId + '"]' );
 					if ( existing ) { pickMentor( existing ); return; }
@@ -275,10 +290,10 @@
 				showStage( 'mentors' );
 				return;
 			}
-			loadProgram( programId, mentorId );
+			loadProgram( program, mentorId );
 		};
 
-		// Initial stage (inline app only; the modal starts hidden/empty).
+		// Initial stage (inline app only; the popup starts hidden).
 		if ( ! inModal ) {
 			var hasProgram = app.getAttribute( 'data-program' );
 			if ( hasProgram ) {
@@ -294,18 +309,21 @@
 		}
 	}
 
-	/* ----- Popup modal open/close ----- */
-	function openModal( programId, mentorId ) {
+	/* ------------------------------------------------------------------ *
+	 * Popup open / close
+	 * ------------------------------------------------------------------ */
+	function openModal( program, mentorId ) {
 		var overlay = document.getElementById( 'gydb-modal' );
-		if ( ! overlay ) { return; }
+		if ( ! overlay ) { return false; }
 		var app = overlay.querySelector( '.gydb-app' );
 		overlay.hidden = false;
 		document.body.classList.add( 'gydb-modal-open' );
 		if ( app && typeof app.gydbOpenFor === 'function' ) {
-			app.gydbOpenFor( programId, mentorId || '' );
+			app.gydbOpenFor( program || '', mentorId || '' );
 		}
 		var closeBtn = overlay.querySelector( '.gydb-modal-close' );
 		if ( closeBtn ) { closeBtn.focus(); }
+		return true;
 	}
 
 	function closeModal() {
@@ -315,25 +333,85 @@
 		document.body.classList.remove( 'gydb-modal-open' );
 	}
 
+	function stripSlash( p ) {
+		return ( p || '' ).replace( /\/+$/, '' );
+	}
+
+	/**
+	 * Is this anchor a link to the booking page? Covers nav-menu items,
+	 * buttons and any other theme link, with pretty or plain permalinks.
+	 */
+	function isBookingLink( a ) {
+		if ( ! a || ! a.getAttribute ) { return false; }
+		if ( a.classList && a.classList.contains( 'gyd-book-now' ) ) { return true; }
+
+		var href = a.getAttribute( 'href' );
+		if ( ! href || href.charAt( 0 ) === '#' || /^(mailto|tel):/i.test( href ) ) { return false; }
+
+		var url;
+		try {
+			url = new URL( a.href, window.location.href );
+		} catch ( err ) {
+			return false;
+		}
+		if ( url.origin !== window.location.origin ) { return false; }
+
+		if ( GYDB.bookingPath && stripSlash( url.pathname ) === stripSlash( GYDB.bookingPath ) ) {
+			return true;
+		}
+		// Plain permalinks: /?page_id=123
+		if ( GYDB.bookingPageId && url.searchParams.get( 'page_id' ) === String( GYDB.bookingPageId ) ) {
+			return true;
+		}
+		return false;
+	}
+
 	document.addEventListener( 'click', function ( e ) {
+		// Explicit triggers rendered by the shortcodes.
 		var trigger = e.target.closest( '.gydb-open-modal' );
 		if ( trigger ) {
-			e.preventDefault();
-			openModal( trigger.getAttribute( 'data-program-id' ), trigger.getAttribute( 'data-mentor-id' ) );
+			if ( openModal( trigger.getAttribute( 'data-program-id' ), trigger.getAttribute( 'data-mentor-id' ) ) ) {
+				e.preventDefault();
+			}
 			return;
 		}
+
 		if ( e.target.closest( '.gydb-modal-close' ) ) {
 			closeModal();
 			return;
 		}
-		// Click on the dark backdrop (outside the modal box) closes it.
 		if ( e.target.classList && e.target.classList.contains( 'gydb-modal-overlay' ) ) {
 			closeModal();
+			return;
+		}
+
+		// Any other link that points at the booking page (e.g. the theme's
+		// "Book Now" menu item) — open the popup instead of navigating.
+		var link = e.target.closest( 'a' );
+		if ( ! link || link.classList.contains( 'gydb-open-modal' ) ) { return; }
+		if ( e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0 ) { return; }
+		if ( link.target && '_blank' === link.target ) { return; }
+
+		// On the booking page itself the inline experience is already shown.
+		if ( document.querySelector( '.gydb-app:not(.gydb-modal-content)' ) ) { return; }
+
+		if ( isBookingLink( link ) ) {
+			var u;
+			try {
+				u = new URL( link.href, window.location.href );
+			} catch ( err ) {
+				return;
+			}
+			var prog = u.searchParams.get( 'gyd_program' ) || '';
+			var ment = u.searchParams.get( 'gyd_mentor' ) || '';
+			if ( openModal( prog, ment ) ) {
+				e.preventDefault();
+			}
 		}
 	} );
 
 	document.addEventListener( 'keydown', function ( e ) {
-		if ( e.key === 'Escape' ) {
+		if ( 'Escape' === e.key ) {
 			var overlay = document.getElementById( 'gydb-modal' );
 			if ( overlay && ! overlay.hidden ) { closeModal(); }
 		}

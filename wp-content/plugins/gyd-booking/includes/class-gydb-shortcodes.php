@@ -543,10 +543,31 @@ class GYDB_Shortcodes {
 	 * ================================================================== */
 
 	/**
-	 * Print the popup modal in the footer if a Book trigger was used.
+	 * Print the popup modal in the footer.
+	 *
+	 * Rendered on every front-end page by default so that ANY link to the
+	 * booking page — including a "Book Now" item in the theme's navigation
+	 * menu — can open the popup instead of navigating away. Disable with:
+	 *   add_filter( 'gydb_enable_popup', '__return_false' );
 	 */
 	public static function maybe_render_modal() {
-		if ( ! self::$need_modal ) {
+		/**
+		 * Whether the booking popup is available on this page.
+		 *
+		 * @param bool $enabled    Default true.
+		 * @param bool $need_modal Whether a shortcode on this page requested it.
+		 */
+		$enabled = apply_filters( 'gydb_enable_popup', true, self::$need_modal );
+
+		if ( ! $enabled && ! self::$need_modal ) {
+			return;
+		}
+
+		// The popup needs the stylesheet/script even on pages with no shortcode.
+		GYDB_Assets::enqueue();
+
+		$programs = GYDB_Helpers::get_programs();
+		if ( empty( $programs ) ) {
 			return;
 		}
 
@@ -556,8 +577,21 @@ class GYDB_Shortcodes {
 			<div class="gydb-modal" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Book a session', 'gyd-booking' ); ?>">
 				<button type="button" class="gydb-modal-close" aria-label="<?php esc_attr_e( 'Close', 'gyd-booking' ); ?>">&times;</button>
 				<div class="gydb-modal-content gydb-app" data-program="" data-mentor="" data-min-date="<?php echo esc_attr( $min_date ); ?>" data-max-date="<?php echo esc_attr( $max_date ); ?>">
+
+					<div class="gydb-stage gydb-stage-pick" hidden>
+						<div class="gydb-marker"><div class="gydb-marker-body">
+							<span class="gydb-eyebrow"><?php esc_html_e( 'Start here', 'gyd-booking' ); ?></span>
+							<h2><?php esc_html_e( 'Pick your programme.', 'gyd-booking' ); ?></h2>
+						</div></div>
+						<div class="gydb-card-grid gydb-cols-2">
+							<?php foreach ( $programs as $p ) : ?>
+								<?php echo self::render_picker_card( $p ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<?php endforeach; ?>
+						</div>
+					</div>
+
 					<?php
-					echo self::render_mentors_stage( null, '', false, true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo self::render_mentors_stage( null, '', true, true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo self::render_form_stage( $min_date, $max_date, '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo self::render_success_stage(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo self::render_loading(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

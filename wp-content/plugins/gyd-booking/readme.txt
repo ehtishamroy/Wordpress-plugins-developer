@@ -4,7 +4,7 @@ Tags: booking, mentor, appointments, programmes, youth
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,21 @@ See **GYD Booking → Shortcodes & Help** in wp-admin for the full guide.
 * `[gyd_book_button program="..." text="Book Now" style="primary|navy|outline"]` — a single button.
 
 == Changelog ==
+
+= 1.0.2 =
+* Booking now opens in a popup on ANY link to the booking page — including a
+  "Book Now" item in the theme's navigation menu — so visitors never leave the
+  page. Add the class `gyd-book-now` to force any button/link to open it.
+* The popup is available site-wide and starts with a programme picker when no
+  programme was specified.
+* Assets are now versioned by file modification time, so updated CSS/JS always
+  bust the browser cache (fixes "I updated the plugin but nothing changed").
+* Spinner is hidden by default in CSS and only shown during a request, so it
+  can never get stuck on screen.
+
+= 1.0.1 =
+* Fixed a stuck loading spinner that covered the booking widget.
+* Added the popup modal booking flow for shortcode buttons.
 
 = 1.0.0 =
 * Initial release.

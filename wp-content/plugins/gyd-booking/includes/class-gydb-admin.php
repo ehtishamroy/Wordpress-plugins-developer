@@ -560,6 +560,20 @@ class GYDB_Admin {
 			<h1><?php esc_html_e( 'Shortcodes & Help', 'gyd-booking' ); ?></h1>
 
 			<div class="gydb-help-card">
+				<h2><?php esc_html_e( 'Installed version', 'gyd-booking' ); ?></h2>
+				<p>
+					<strong><?php echo esc_html( GYDB_VERSION ); ?></strong> —
+					<?php esc_html_e( 'if this number does not match the version you just uploaded, the old plugin files are still on the server. Re-upload, then clear any caching plugin and hard-refresh the page (Ctrl/Cmd + Shift + R).', 'gyd-booking' ); ?>
+				</p>
+			</div>
+
+			<div class="gydb-help-card">
+				<h2><?php esc_html_e( 'Make the header “Book Now” open the popup', 'gyd-booking' ); ?></h2>
+				<p><?php esc_html_e( 'Any link pointing at your booking page opens the popup automatically — including a menu item. Nothing to configure.', 'gyd-booking' ); ?></p>
+				<p><?php printf( wp_kses_post( __( 'To force any other button or link to open it, give it the CSS class <code>gyd-book-now</code> (Appearance → Menus → Screen Options → tick “CSS Classes”).', 'gyd-booking' ) ) ); ?></p>
+			</div>
+
+			<div class="gydb-help-card">
 				<h2><?php esc_html_e( 'Quick start', 'gyd-booking' ); ?></h2>
 				<ol>
 					<li><?php esc_html_e( 'The nine programmes and a “Book a Session” page were created automatically on activation.', 'gyd-booking' ); ?></li>

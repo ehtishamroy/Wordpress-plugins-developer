@@ -35,8 +35,16 @@ class GYDB_Ajax {
 	public static function get_program_view() {
 		self::check_nonce();
 
-		$program_id = isset( $_POST['program_id'] ) ? absint( wp_unslash( $_POST['program_id'] ) ) : 0;
-		$program    = GYDB_Shortcodes::resolve_program( $program_id );
+		// Accepts a programme ID or slug ("program"), or a legacy "program_id".
+		$raw = '';
+		if ( isset( $_POST['program'] ) ) {
+			$raw = sanitize_text_field( wp_unslash( $_POST['program'] ) );
+		}
+		if ( '' === $raw && isset( $_POST['program_id'] ) ) {
+			$raw = sanitize_text_field( wp_unslash( $_POST['program_id'] ) );
+		}
+
+		$program = GYDB_Shortcodes::resolve_program( $raw );
 
 		if ( ! $program ) {
 			wp_send_json_error( array( 'message' => __( 'Programme not found.', 'gyd-booking' ) ) );

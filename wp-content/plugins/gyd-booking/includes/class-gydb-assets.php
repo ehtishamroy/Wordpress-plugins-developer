@@ -50,16 +50,20 @@ class GYDB_Assets {
 			'gydb-frontend',
 			GYDB_URL . 'assets/css/gyd-booking.css',
 			array(),
-			GYDB_VERSION
+			self::asset_ver( 'assets/css/gyd-booking.css' )
 		);
 
 		wp_register_script(
 			'gydb-frontend',
 			GYDB_URL . 'assets/js/gyd-booking.js',
 			array(),
-			GYDB_VERSION,
+			self::asset_ver( 'assets/js/gyd-booking.js' ),
 			true
 		);
+
+		$booking_page_id = (int) GYDB_Helpers::get_setting( 'booking_page_id', 0 );
+		$booking_url     = GYDB_Helpers::get_booking_url();
+		$booking_path    = $booking_url ? wp_parse_url( $booking_url, PHP_URL_PATH ) : '';
 
 		wp_localize_script(
 			'gydb-frontend',
@@ -67,6 +71,9 @@ class GYDB_Assets {
 			array(
 				'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
 				'nonce'          => wp_create_nonce( 'gydb_booking' ),
+				'bookingUrl'     => $booking_url,
+				'bookingPath'    => $booking_path ? untrailingslashit( $booking_path ) : '',
+				'bookingPageId'  => $booking_page_id,
 				'i18n'           => array(
 					'selectDate'    => __( 'Select a date to see available times.', 'gyd-booking' ),
 					'noSlots'       => __( 'No times available on this day. Please choose another date.', 'gyd-booking' ),
@@ -79,7 +86,9 @@ class GYDB_Assets {
 			)
 		);
 
-		if ( self::$should_load ) {
+		// Load site-wide when the popup is enabled, so that a "Book Now" link
+		// in the theme's nav menu can open it on any page.
+		if ( self::$should_load || apply_filters( 'gydb_enable_popup', true, false ) ) {
 			self::load_assets();
 		}
 	}
@@ -95,6 +104,25 @@ class GYDB_Assets {
 		wp_enqueue_script( 'gydb-frontend' );
 
 		wp_add_inline_style( 'gydb-frontend', self::brand_css_vars() );
+	}
+
+	/**
+	 * Version string for an asset. Uses the file's modification time so a
+	 * changed file ALWAYS busts the browser / CDN cache, even if the plugin
+	 * version was not bumped. Falls back to the plugin version.
+	 *
+	 * @param string $relative_path Path relative to the plugin root.
+	 * @return string
+	 */
+	public static function asset_ver( $relative_path ) {
+		$file = GYDB_PATH . ltrim( $relative_path, '/' );
+		if ( file_exists( $file ) ) {
+			$mtime = filemtime( $file );
+			if ( $mtime ) {
+				return GYDB_VERSION . '.' . $mtime;
+			}
+		}
+		return GYDB_VERSION;
 	}
 
 	/**
