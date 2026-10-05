@@ -1,94 +1,212 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Programs | Global Youth Development Organisation CIC</title>
-<meta name="description" content="Nine programmes connecting young people, institutions and communities across borders.">
+<!-- GYD Programs Body (no topbar / header / footer) - paste into Elementor HTML widget -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+
 <style>
-.program-row { display: grid; grid-template-columns: 100px 1fr auto; gap: 32px; align-items: center; padding: 40px 0; border-bottom: 1px solid var(--line); }
-.program-row:last-child { border-bottom: none; }
-.program-row .big-num { font-family: var(--display); font-size: 72px; font-weight: 700; color: var(--red); line-height: 1; letter-spacing: -0.03em; }
-.program-row .prog-category { font-family: var(--display); font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-.program-row h3 { font-size: 28px; margin-bottom: 8px; }
-.program-row .tagline { font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--navy); letter-spacing: 0.05em; text-transform: uppercase; }
-.program-row.alt .big-num { color: var(--gold); }
+/* ============================================
+   GLOBAL YOUTH DEVELOPMENT — scoped to .gyd-body
+   Design system: Navy / Red / Gold / Cream
+   Fonts: Space Grotesk (display) + DM Sans (body)
+   ============================================ */
+
+.gyd-body {
+  --navy: #0A2540;
+  --navy-2: #143659;
+  --red: #E41E20;
+  --red-dark: #C41A1C;
+  --gold: #D4A017;
+  --gold-light: #E8BC45;
+  --cream: #FAF6EF;
+  --cream-2: #F1EBDF;
+  --ink: #1A1A1A;
+  --muted: #6B7280;
+  --line: #E5E0D4;
+  --white: #FFFFFF;
+  --display: 'Space Grotesk', -apple-system, sans-serif;
+  --body: 'DM Sans', -apple-system, sans-serif;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --container: 1200px;
+
+  font-family: var(--body);
+  color: var(--ink);
+  background: var(--cream);
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+}
+
+.gyd-body *, .gyd-body *::before, .gyd-body *::after { box-sizing: border-box; margin: 0; padding: 0; }
+.gyd-body img { max-width: 100%; height: auto; display: block; }
+.gyd-body a { color: inherit; text-decoration: none; }
+.gyd-body button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+.gyd-body .wrap { max-width: var(--container); margin: 0 auto; padding: 0 32px; }
+
+/* Typography */
+.gyd-body h1, .gyd-body h2, .gyd-body h3, .gyd-body h4, .gyd-body h5 {
+  font-family: var(--display);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--navy);
+  letter-spacing: -0.015em;
+}
+.gyd-body h1 { font-size: clamp(40px, 6vw, 72px); letter-spacing: -0.025em; }
+.gyd-body h2 { font-size: clamp(32px, 4vw, 48px); margin-bottom: 16px; }
+.gyd-body h3 { font-size: clamp(22px, 3vw, 32px); margin-bottom: 12px; }
+.gyd-body h4 { font-size: 20px; margin-bottom: 8px; }
+.gyd-body h5 { font-size: 16px; font-weight: 600; }
+.gyd-body p { margin-bottom: 12px; }
+
+.gyd-body .eyebrow {
+  font-family: var(--body);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+/* Buttons */
+.gyd-body .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  border-radius: 4px;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-align: center;
+  line-height: 1;
+}
+.gyd-body .btn-primary { background: var(--red); color: var(--white); }
+.gyd-body .btn-primary:hover { background: var(--red-dark); transform: translateY(-1px); color: var(--white); }
+.gyd-body .btn-navy { background: var(--navy); color: var(--white); }
+.gyd-body .btn-navy:hover { background: var(--navy-2); transform: translateY(-1px); color: var(--white); }
+
+/* Page hero (lighter, for inner pages) */
+.gyd-body .page-hero {
+  background: var(--cream);
+  padding: 80px 0;
+  border-bottom: 1px solid var(--line);
+}
+.gyd-body .page-hero h1 { margin-bottom: 20px; }
+.gyd-body .page-hero p { color: var(--muted); font-size: 18px; max-width: 680px; }
+
+/* ===== SECTIONS ===== */
+.gyd-body section { padding: 80px 0; }
+.gyd-body .section-dark { background: var(--navy); color: var(--white); }
+.gyd-body .section-dark h1, .gyd-body .section-dark h2, .gyd-body .section-dark h3, .gyd-body .section-dark h4 { color: var(--white); }
+.gyd-body .section-dark .eyebrow { color: var(--gold); }
+.gyd-body .section-dark p { color: rgba(255,255,255,0.8); }
+
+/* ===== PROGRAM ROWS (page-specific) ===== */
+.gyd-body .program-row { display: grid; grid-template-columns: 100px 1fr auto; gap: 32px; align-items: center; padding: 40px 0; border-bottom: 1px solid var(--line); }
+.gyd-body .program-row:last-child { border-bottom: none; }
+.gyd-body .program-row .big-num { font-family: var(--display); font-size: 72px; font-weight: 700; color: var(--red); line-height: 1; letter-spacing: -0.03em; }
+.gyd-body .program-row .prog-category { font-family: var(--display); font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.gyd-body .program-row h3 { font-size: 28px; margin-bottom: 8px; }
+.gyd-body .program-row .tagline { font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--navy); letter-spacing: 0.05em; text-transform: uppercase; }
+.gyd-body .program-row.alt .big-num { color: var(--gold); }
+
+/* ===== PROGRAMME DETAIL BLOCKS (sit under a row, aligned with the text column) ===== */
+.gyd-body .program-detail { grid-column: 2 / -1; background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 32px; }
+.gyd-body .program-detail .eyebrow { margin-bottom: 8px; }
+.gyd-body .program-detail h4 { font-size: 24px; margin-bottom: 8px; }
+.gyd-body .program-detail p { font-size: 15px; color: var(--muted); margin-bottom: 0; }
+.gyd-body .program-detail .detail-lead { font-family: var(--display); font-weight: 500; font-size: 18px; color: var(--navy); line-height: 1.4; margin-bottom: 16px; }
+.gyd-body .detail-sub { font-family: var(--display); font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--red); margin: 28px 0 12px; }
+.gyd-body .detail-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0 0; }
+.gyd-body .detail-sub + .detail-steps { margin-top: 0; }
+.gyd-body .detail-step { padding: 16px 18px; border-left: 3px solid var(--red); background: var(--cream); border-radius: 0 8px 8px 0; }
+.gyd-body .program-row.alt .detail-step { border-left-color: var(--gold); }
+.gyd-body .detail-step .n { display: block; font-family: var(--display); font-size: 13px; font-weight: 700; letter-spacing: 0.1em; color: var(--red); margin-bottom: 4px; }
+.gyd-body .program-row.alt .detail-step .n { color: var(--gold); }
+.gyd-body .detail-step h5 { font-size: 16px; margin-bottom: 4px; }
+.gyd-body .program-detail .detail-step p { font-size: 13px; }
+.gyd-body .detail-close { font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--navy); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 20px; }
+.gyd-body .detail-note { font-size: 14px; color: var(--navy); background: var(--cream-2); border-radius: 8px; padding: 14px 18px; margin-top: 12px; }
+.gyd-body .detail-list { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 28px; margin-top: 14px; }
+.gyd-body .detail-list li { position: relative; padding-left: 24px; font-size: 14px; color: var(--ink); }
+.gyd-body .detail-list li::before { content: ""; position: absolute; left: 0; top: 10px; width: 12px; height: 3px; background: var(--gold); border-radius: 2px; }
+
+.gyd-body .program-detail p + p { margin-top: 12px; }
+.gyd-body .detail-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
+.gyd-body .detail-flow span { font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--navy); background: var(--cream); border: 1px solid var(--line); border-radius: 4px; padding: 8px 14px; }
+.gyd-body .detail-flow span.arrow { color: var(--red); background: none; border: none; padding: 0; font-size: 16px; }
+.gyd-body .detail-mission { background: var(--navy); color: var(--white); border-left: 4px solid var(--gold); border-radius: 8px; padding: 20px 24px; margin-top: 14px; font-family: var(--display); font-weight: 500; font-size: 18px; line-height: 1.4; }
+
+/* ===== NEWSLETTER ===== */
+.gyd-body .newsletter {
+  background: var(--navy);
+  padding: 60px 0;
+  color: var(--white);
+}
+.gyd-body .newsletter-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+.gyd-body .newsletter h3 { color: var(--white); margin-bottom: 8px; }
+.gyd-body .newsletter p { color: rgba(255,255,255,0.75); margin-bottom: 24px; }
+.gyd-body .newsletter-form {
+  display: flex;
+  gap: 10px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.gyd-body .newsletter-form input {
+  flex: 1;
+  padding: 14px 18px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.08);
+  color: var(--white);
+  font-family: var(--body);
+  font-size: 15px;
+}
+.gyd-body .newsletter-form input::placeholder { color: rgba(255,255,255,0.5); }
+.gyd-body .newsletter-form input:focus { outline: none; border-color: var(--gold); background: rgba(255,255,255,0.12); }
+.gyd-body .newsletter-form button {
+  padding: 14px 28px;
+  background: var(--gold);
+  color: var(--navy);
+  border-radius: 4px;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+.gyd-body .newsletter-form button:hover { background: var(--gold-light); color: var(--navy); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .gyd-body .detail-steps { grid-template-columns: repeat(2, 1fr); }
+}
+
 @media (max-width: 768px) {
-  .program-row { grid-template-columns: 1fr; gap: 12px; padding: 32px 0; }
-  .program-row .big-num { font-size: 48px; }
+  .gyd-body .wrap { padding: 0 20px; }
+  .gyd-body section { padding: 60px 0; }
+  .gyd-body .newsletter-form { flex-direction: column; }
+  .gyd-body .program-row { grid-template-columns: 1fr; gap: 12px; padding: 32px 0; }
+  .gyd-body .program-row .big-num { font-size: 48px; }
+  .gyd-body .program-detail { grid-column: 1; padding: 24px; }
+  .gyd-body .detail-steps, .gyd-body .detail-list { grid-template-columns: 1fr; }
 }
 </style>
-</head>
-<body>
 
-<div class="topbar">
-  <div class="wrap">
-    <div class="topbar-left">
-      <span class="hide-mobile">Follow us:</span>
-      <div class="social-icons">
-        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.5.9.4.4.7.9.9 1.5.2.4.3 1 .4 2.2.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.5-.4.4-.9.7-1.5.9-.4.2-1 .3-2.2.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.5-.9-.4-.4-.7-.9-.9-1.5-.2-.4-.3-1-.4-2.2-.1-1.2-.1-1.6-.1-4.8s0-3.6.1-4.8c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.5.4-.4.9-.7 1.5-.9.4-.2 1-.3 2.2-.4 1.2-.1 1.6-.1 4.8-.1zm0 2.2c-3.2 0-3.5 0-4.7.1-1.1.1-1.7.2-2.1.4-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.2.4-.3 1-.4 2.1-.1 1.2-.1 1.5-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.4 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.2 1 .3 2.1.4 1.2.1 1.5.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.4.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.2-.4.3-1 .4-2.1.1-1.2.1-1.5.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.4-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.2-1-.3-2.1-.4-1.2-.1-1.5-.1-4.7-.1zm0 3.7a4 4 0 110 8 4 4 0 010-8zm0 6.6a2.6 2.6 0 100-5.2 2.6 2.6 0 000 5.2zm5-6.8a.9.9 0 11-1.9 0 .9.9 0 011.9 0z"/></svg></a>
-        <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8.3 18H5.7V9.5h2.6V18zM7 8.3C6.1 8.3 5.5 7.7 5.5 6.8s.6-1.5 1.5-1.5 1.5.6 1.5 1.5-.6 1.5-1.5 1.5zm11 9.7h-2.6v-4.1c0-1 0-2.3-1.4-2.3S12.4 12.7 12.4 14v4h-2.6V9.5h2.5v1.1h.1c.4-.7 1.3-1.4 2.6-1.4 2.8 0 3.3 1.8 3.3 4.2V18z"/></svg></a>
-        <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23.5 6.2c-.3-1-1.1-1.8-2.1-2.1C19.6 3.6 12 3.6 12 3.6s-7.6 0-9.4.5c-1 .3-1.8 1.1-2.1 2.1C0 8 0 12 0 12s0 4 .5 5.8c.3 1 1.1 1.8 2.1 2.1 1.8.5 9.4.5 9.4.5s7.6 0 9.4-.5c1-.3 1.8-1.1 2.1-2.1.5-1.8.5-5.8.5-5.8s0-4-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg></a>
-        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12a12 12 0 10-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.6 4.5-4.6 1.3 0 2.6.2 2.6.2v2.9h-1.5c-1.5 0-2 .9-2 1.9V12h3.3l-.5 3.5h-2.8v8.4A12 12 0 0024 12z"/></svg></a>
-        <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M19.6 6.3a4.8 4.8 0 01-2.9-1.1 4.8 4.8 0 01-1.6-2.9h-3.3v12.9a2.9 2.9 0 11-2-2.8V9a6.2 6.2 0 104.9 6V9.5a7.9 7.9 0 004.9 1.7v-3a4.8 4.8 0 01-2-.9z"/></svg></a>
-      </div>
-    </div>
-    <div class="topbar-right">
-      <a href="mailto:hello@globalyouthdev.org">hello@globalyouthdev.org</a>
-      <a href="contact.html">Get in touch →</a>
-    </div>
-  </div>
-</div>
+<div class="gyd-body">
 
-<header class="site-header">
-  <div class="wrap">
-    <a href="index.html" class="logo">
-      <div class="logo-mark"></div>
-      <div class="logo-text">Global Youth<br>Development<small>Organisation CIC</small></div>
-    </a>
-    <button class="mobile-toggle" aria-label="Menu" onclick="document.querySelector('.main-nav').classList.toggle('open')">☰</button>
-    <ul class="main-nav">
-      <li><a href="index.html">Home</a></li>
-      <li class="has-dropdown"><a href="about.html">About Us</a>
-        <ul class="dropdown">
-          <li><a href="about.html#who">Who We Are</a></li>
-          <li><a href="about.html#mission">Mission</a></li>
-          <li><a href="about.html#vision">Vision</a></li>
-          <li><a href="about.html#values">Our Values</a></li>
-        </ul>
-      </li>
-      <li class="has-dropdown"><a href="programs.html" class="active">Programs</a>
-        <ul class="dropdown">
-          <li><a href="#p1">Global Youth Development</a></li>
-          <li><a href="#p2">Global Youth Innovation</a></li>
-          <li><a href="#p3">Global Youth Voices &amp; Rights</a></li>
-          <li><a href="#p4">Global Youth Media</a></li>
-          <li><a href="#p5">Global Youth Culture</a></li>
-          <li><a href="#p6">Global Youth Exchange</a></li>
-          <li><a href="#p7">Global Youth Community</a></li>
-          <li><a href="#p8">Global Youth Ambassador</a></li>
-          <li><a href="#p9">Erasmus+ Programme</a></li>
-        </ul>
-      </li>
-      <li class="has-dropdown"><a href="partners.html">Partners</a>
-        <ul class="dropdown">
-          <li><a href="partners.html#private">Private Sector</a></li>
-          <li><a href="partners.html#universities">Universities</a></li>
-          <li><a href="partners.html#governments">Governments</a></li>
-          <li><a href="partners.html#philanthropy">Philanthropy &amp; Civil Society</a></li>
-        </ul>
-      </li>
-      <li><a href="sponsor.html">Sponsor a Child</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="book.html" class="nav-cta">Book Now</a></li>
-    </ul>
-  </div>
-</header>
-
+<!-- PAGE HERO -->
 <section class="page-hero">
   <div class="wrap">
     <span class="eyebrow">Programmes</span>
@@ -97,6 +215,7 @@
   </div>
 </section>
 
+<!-- PROGRAMME LIST -->
 <section>
   <div class="wrap">
     <div id="p1" class="program-row">
@@ -125,6 +244,25 @@
         <div class="tagline">Speak. Listen. Be Heard.</div>
       </div>
       <a href="book.html" class="btn btn-navy">Book Now</a>
+
+      <div class="program-detail">
+        <span class="eyebrow">Sub-initiative</span>
+        <h4>Dialogue Without Division</h4>
+        <div class="detail-lead">Different opinions. One safe space. We do not have to agree to learn from one another.</div>
+        <p>Young people need spaces where they can discuss difficult and controversial issues without fear of being attacked, dismissed, or excluded. Our approach encourages:</p>
+        <div class="detail-steps">
+          <div class="detail-step"><h5>Listen</h5><p>Listen to understand, not simply to respond.</p></div>
+          <div class="detail-step"><h5>Reflect</h5><p>Think about your own assumptions and values.</p></div>
+          <div class="detail-step"><h5>Question</h5><p>Ask questions before reaching conclusions.</p></div>
+          <div class="detail-step"><h5>Discuss</h5><p>Explore disagreement constructively.</p></div>
+          <div class="detail-step"><h5>Understand</h5><p>Recognise that complex issues rarely have simple answers.</p></div>
+          <div class="detail-step"><h5>Respect</h5><p>Respect people even when opinions differ.</p></div>
+          <div class="detail-step"><h5>Think critically</h5><p>Challenge misinformation, manipulation, and polarising narratives.</p></div>
+          <div class="detail-step"><h5>Connect</h5><p>Find common ground without erasing differences.</p></div>
+          <div class="detail-step"><h5>Act</h5><p>Turn dialogue into meaningful participation.</p></div>
+        </div>
+        <div class="detail-close">For youth.</div>
+      </div>
     </div>
     <div id="p4" class="program-row alt">
       <div class="big-num">04</div>
@@ -170,6 +308,34 @@
         <div class="tagline">Represent. Connect. Inspire. Lead.</div>
       </div>
       <a href="book.html" class="btn btn-navy">Book Now</a>
+
+      <div class="program-detail">
+        <h4>Your voice can travel further.</h4>
+        <p>Through different programmes, Erasmus+ projects, international youth exchanges, speaking opportunities, global events, media exposure and cross-cultural collaborations, we connect Ambassadors with mentors, institutions, decision-makers and international networks — helping them amplify their voices and transform ideas into positive action.</p>
+
+        <div class="detail-sub">How to become a Global Youth Ambassador</div>
+        <div class="detail-steps">
+          <div class="detail-step"><span class="n">01</span><h5>Join</h5><p>Become part of the Global Youth Development Network.</p></div>
+          <div class="detail-step"><span class="n">02</span><h5>Participate</h5><p>Take part in events, leadership activities, Erasmus+ projects and international opportunities.</p></div>
+          <div class="detail-step"><span class="n">03</span><h5>Lead</h5><p>Share your ideas, support your community and create positive change.</p></div>
+          <div class="detail-step"><span class="n">04</span><h5>Stand Out</h5><p>Demonstrate commitment, leadership, creativity and measurable impact.</p></div>
+          <div class="detail-step"><span class="n">05</span><h5>Become an Ambassador</h5><p>Each year, three outstanding young people are selected to represent youth voices globally.</p></div>
+        </div>
+        <div class="detail-note">After completing their one-year term, Ambassadors join the Global Youth Ambassador Alumni Network.</div>
+
+        <div class="detail-sub">Ambassador benefits</div>
+        <p>As a Global Youth Development Ambassador, you will receive:</p>
+        <ul class="detail-list">
+          <li>Access to exclusive global programmes and initiatives</li>
+          <li>Opportunities to speak on international stages and platforms</li>
+          <li>Mentorship from influential leaders and professionals</li>
+          <li>Invitations to curated events with purpose-driven peers</li>
+          <li>Media visibility to amplify your voice and impact</li>
+          <li>Tools to measure, develop and showcase your achievements</li>
+          <li>Year-round guidance from our dedicated Community Team</li>
+          <li>Lifetime membership in our global community of changemakers</li>
+        </ul>
+      </div>
     </div>
     <div id="p9" class="program-row">
       <div class="big-num">09</div>
@@ -179,6 +345,38 @@
         <div class="tagline">Travel. Learn. Grow.</div>
       </div>
       <a href="book.html" class="btn btn-navy">Book Now</a>
+
+      <div class="program-detail">
+        <h4>Erasmus+ &amp; European Youth Opportunities</h4>
+        <div class="detail-lead">Connecting young people across borders. Building skills, confidence and active citizenship.</div>
+        <p>At Global Youth Development Network (GYD Network), we believe that young people grow when they are given opportunities to experience new cultures, exchange ideas, develop practical skills and connect with peers beyond their own communities.</p>
+        <p>Through our Erasmus+ and European Youth Programme, we aim to build international partnerships that create meaningful learning, mobility and participation opportunities for young people and youth professionals.</p>
+        <p>Our work is aligned with the core priorities of Erasmus+: inclusion and diversity, digital transformation, environmental responsibility, and participation in democratic life and civic engagement.</p>
+
+        <div class="detail-sub">What we do</div>
+        <p>Through collaboration with youth organisations, educational institutions, community groups and European partners, GYD Network seeks to develop and participate in:</p>
+        <div class="detail-steps">
+          <div class="detail-step"><h5>Youth Exchanges</h5><p>Bringing young people from different countries together to learn, exchange cultures and explore shared challenges.</p></div>
+          <div class="detail-step"><h5>Youth Worker Mobility</h5><p>Enabling youth professionals and volunteers to exchange knowledge, training and good practice.</p></div>
+          <div class="detail-step"><h5>Youth Participation Activities</h5><p>Giving young people a stronger voice in their communities and creating opportunities to engage with decision-makers.</p></div>
+          <div class="detail-step"><h5>DiscoverEU Inclusion Opportunities</h5><p>Supporting young people with fewer opportunities to experience Europe, develop independence and broaden their horizons.</p></div>
+          <div class="detail-step"><h5>European Cooperation Partnerships</h5><p>Building long-term partnerships between organisations to exchange expertise, develop innovative approaches and create sustainable youth programmes.</p></div>
+          <div class="detail-step"><h5>Training, Workshops &amp; Peer Learning</h5><p>Developing leadership, employability, digital, communication and intercultural skills.</p></div>
+        </div>
+        <div class="detail-note">These areas reflect the Erasmus+ youth actions described in the programme, including youth exchanges, youth-worker mobility, youth participation activities and DiscoverEU Inclusion.</div>
+
+        <div class="detail-sub">Our focus</div>
+        <div class="detail-lead">Inclusion. Participation. Skills. Connection. Opportunity.</div>
+        <p>We are particularly interested in ensuring that international opportunities reach young people who may otherwise face barriers to participation.</p>
+        <p>Erasmus+ places strong emphasis on inclusion, including young people affected by economic, social, cultural, geographical, educational or other barriers. The programme can provide additional support designed to reduce those barriers.</p>
+        <p>For GYD Network, international mobility is therefore not simply about travelling. It is about giving young people the opportunity to:</p>
+        <div class="detail-flow"><span>discover</span><span class="arrow">→</span><span>connect</span><span class="arrow">→</span><span>learn</span><span class="arrow">→</span><span>participate</span><span class="arrow">→</span><span>grow</span><span class="arrow">→</span><span>lead</span></div>
+
+        <div class="detail-sub">Why Erasmus+?</div>
+        <p>International youth experiences can help young people strengthen their confidence, employability, initiative, digital and language skills, intercultural understanding and participation in society.</p>
+        <p>For GYD Network, these opportunities directly support our mission:</p>
+        <div class="detail-mission">To connect young people with the people, institutions, knowledge and opportunities that can help them shape their future.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -209,20 +407,4 @@
   </div>
 </section>
 
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="logo"><div class="logo-mark"></div><div class="logo-text" style="color:var(--white)">Global Youth<br>Development<small style="color:rgba(255,255,255,0.5)">Organisation CIC</small></div></div>
-        <p>Giving every young person a voice and a path forward — connecting youth, institutions and communities across borders.</p>
-      </div>
-      <div><h5>Navigate</h5><ul><li><a href="about.html">About Us</a></li><li><a href="programs.html">Programs</a></li><li><a href="partners.html">Partners</a></li><li><a href="sponsor.html">Sponsor A Child</a></li><li><a href="contact.html">Contact</a></li></ul></div>
-      <div><h5>Get involved</h5><ul><li><a href="book.html">Book a session</a></li><li><a href="sponsor.html">Become a mentor</a></li><li><a href="sponsor.html">Volunteer</a></li><li><a href="partners.html">Partner with us</a></li></ul></div>
-      <div><h5>Contact</h5><ul><li>London, United Kingdom</li><li><a href="mailto:hello@globalyouthdev.org">hello@globalyouthdev.org</a></li><li>Mon–Fri, 09:00–17:00 GMT</li></ul></div>
-    </div>
-    <div class="footer-bottom"><span>© 2026 Global Youth Development Organisation CIC. All rights reserved.</span><div class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Accessibility</a></div></div>
-  </div>
-</footer>
-
-</body>
-</html>
+</div>
