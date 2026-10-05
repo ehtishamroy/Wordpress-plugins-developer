@@ -1,0 +1,35 @@
+/* GYD Booking — admin styles */
+
+.gydb-admin .gydb-field-grid { display: flex; gap: 28px; flex-wrap: wrap; }
+.gydb-admin .gydb-photo-field { width: 200px; flex-shrink: 0; }
+.gydb-admin .gydb-text-fields { flex: 1; min-width: 320px; }
+.gydb-admin .gydb-photo-preview { margin: 10px 0; }
+.gydb-admin .gydb-photo-preview img { border: 3px solid #f1ebdf; }
+
+/* Status badges */
+.gydb-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.gydb-badge-pending { background: #fdf0d5; color: #8a6d1b; }
+.gydb-badge-confirmed { background: #d7ebff; color: #0A2540; }
+.gydb-badge-completed { background: #dcf5e3; color: #1d6b38; }
+.gydb-badge-cancelled { background: #f6d9d9; color: #C41A1C; }
+
+.gydb-bookings-table .gydb-status-links a { font-size: 12px; }
+.gydb-bookings-table .gydb-delete { color: #b32d2e; font-size: 12px; }
+.gydb-bookings-table .gydb-msg { color: #6B7280; font-style: italic; font-size: 12px; }
+.gydb-row-actions { line-height: 1.8; }
+
+.gydb-search-form { margin: 8px 0 12px; }
+
+/* Help cards */
+.gydb-help-card {
+  background: #fff; border: 1px solid #e0e0e0; border-left: 4px solid #E41E20;
+  border-radius: 6px; padding: 20px 24px; margin: 16px 0; max-width: 960px;
+}
+.gydb-help-card h2 { margin-top: 0; }
+.gydb-help-card code { background: #f6f7f7; padding: 2px 6px; border-radius: 3px; }
+.gydb-help-card table { margin-top: 10px; }
+
+.gydb-color-field { width: 110px; font-family: monospace; }

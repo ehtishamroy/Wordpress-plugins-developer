@@ -1,0 +1,415 @@
+/* ============================================================
+   GYD BOOKING — FRONTEND  (theme-proof)
+
+   Everything is scoped under .gyd-booking and uses enough
+   specificity / !important on the properties that themes and page
+   builders love to restyle (Hello Elementor's reset.css, the
+   Elementor kit's global button / link / heading / form styles),
+   so the booking UI looks identical on any theme.
+
+   Brand colours come from inline vars (Settings → Brand colours);
+   the fallbacks below keep it correct even without them.
+   ============================================================ */
+
+.gyd-booking {
+  --gyd-navy: #0A2540;
+  --gyd-navy-2: #143659;
+  --gyd-red: #E41E20;
+  --gyd-red-dark: #C41A1C;
+  --gyd-gold: #D4A017;
+  --gyd-gold-light: #E8BC45;
+  --gyd-cream: #FAF6EF;
+  --gyd-cream-2: #F1EBDF;
+  --gyd-ink: #1A1A1A;
+  --gyd-muted: #6B7280;
+  --gyd-line: #E5E0D4;
+  --gyd-white: #FFFFFF;
+  --gyd-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --gyd-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --gyd-radius: 12px;
+
+  font-family: var(--gyd-body);
+  font-size: 16px;
+  color: var(--gyd-ink);
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+.gyd-booking *,
+.gyd-booking *::before,
+.gyd-booking *::after { box-sizing: border-box; }
+
+/* The hidden attribute must always win over component display rules. */
+.gyd-booking [hidden],
+.gyd-booking.gydb-modal-overlay[hidden] { display: none !important; }
+
+/* ---------- Headings ---------- */
+.gyd-booking h2,
+.gyd-booking h3,
+.gyd-booking h4,
+.gyd-booking h5 {
+  font-family: var(--gyd-display) !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+  color: var(--gyd-navy) !important;
+  letter-spacing: -0.015em !important;
+  text-transform: none !important;
+  margin: 0 0 12px !important;
+  padding: 0 !important;
+}
+.gyd-booking h2 { font-size: clamp(28px, 4vw, 44px) !important; }
+.gyd-booking h3 { font-size: clamp(20px, 3vw, 30px) !important; }
+.gyd-booking h4 { font-size: 19px !important; margin-bottom: 6px !important; }
+.gyd-booking h5 { font-size: 16px !important; font-weight: 600 !important; margin-bottom: 6px !important; }
+.gyd-booking p { margin: 0 0 12px; }
+
+/* ---------- Eyebrow / lead / marker ---------- */
+.gyd-booking .gydb-eyebrow {
+  font-family: var(--gyd-body); font-weight: 500; font-size: 12px;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gyd-red); margin-bottom: 10px; display: inline-block;
+}
+.gyd-booking .gydb-lead { font-size: clamp(16px, 2vw, 19px); color: var(--gyd-muted); max-width: 720px; }
+.gyd-booking .gydb-muted { color: var(--gyd-muted); }
+
+.gyd-booking .gydb-marker { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 32px; }
+.gyd-booking .gydb-marker::before {
+  content: ""; width: 4px; background: var(--gyd-red);
+  align-self: stretch; min-height: 60px; flex-shrink: 0; border-radius: 2px;
+}
+.gyd-booking .gydb-marker-body { flex: 1; }
+.gyd-booking .gydb-marker-body h2 { margin-bottom: 4px !important; }
+
+/* ============================================================
+   BUTTONS  (<button> and <a>)
+   Beats: Hello Elementor reset  [type=button],[type=submit],button
+          Elementor kit          .elementor-kit-N button / a
+   ============================================================ */
+.gyd-booking .gydb-btn {
+  display: inline-flex !important;
+  align-items: center; justify-content: center;
+  padding: 14px 28px !important;
+  margin: 0;
+  border: 0 !important;
+  border-radius: 4px !important;
+  font-family: var(--gyd-display) !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1 !important;
+  text-align: center;
+  text-transform: none !important;
+  text-decoration: none !important;
+  white-space: normal !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.gyd-booking .gydb-btn-block { width: 100% !important; }
+
+.gyd-booking .gydb-btn-primary,
+.gyd-booking .gydb-btn-primary:visited { background: var(--gyd-red) !important; color: var(--gyd-white) !important; }
+.gyd-booking .gydb-btn-primary:hover,
+.gyd-booking .gydb-btn-primary:focus,
+.gyd-booking .gydb-btn-primary:active { background: var(--gyd-red-dark) !important; color: var(--gyd-white) !important; }
+
+.gyd-booking .gydb-btn-navy,
+.gyd-booking .gydb-btn-navy:visited { background: var(--gyd-navy) !important; color: var(--gyd-white) !important; }
+.gyd-booking .gydb-btn-navy:hover,
+.gyd-booking .gydb-btn-navy:focus,
+.gyd-booking .gydb-btn-navy:active { background: var(--gyd-navy-2) !important; color: var(--gyd-white) !important; }
+
+.gyd-booking .gydb-btn-outline,
+.gyd-booking .gydb-btn-outline:visited { background: transparent !important; color: var(--gyd-navy) !important; border: 1.5px solid var(--gyd-navy) !important; }
+.gyd-booking .gydb-btn-outline:hover,
+.gyd-booking .gydb-btn-outline:focus,
+.gyd-booking .gydb-btn-outline:active { background: var(--gyd-navy) !important; color: var(--gyd-white) !important; }
+
+.gyd-booking .gydb-btn:hover { transform: translateY(-1px); }
+.gyd-booking .gydb-btn:focus-visible,
+.gyd-booking .gydb-slot:focus-visible,
+.gyd-booking .gydb-link-btn:focus-visible,
+.gyd-booking .gydb-modal-close:focus-visible { outline: 3px solid var(--gyd-gold) !important; outline-offset: 2px; }
+.gyd-booking .gydb-btn[disabled] { opacity: 0.5; cursor: not-allowed !important; transform: none; }
+
+/* Text-style button */
+.gyd-booking .gydb-link-btn {
+  display: inline !important;
+  background: none !important; border: 0 !important; border-radius: 0 !important;
+  padding: 0 !important; margin: 0;
+  box-shadow: none !important;
+  color: var(--gyd-red) !important;
+  font-family: var(--gyd-display) !important; font-weight: 600 !important; font-size: 14px !important;
+  line-height: 1.4 !important; text-transform: none !important; letter-spacing: 0 !important;
+  white-space: normal !important; cursor: pointer;
+}
+.gyd-booking .gydb-link-btn:hover,
+.gyd-booking .gydb-link-btn:focus,
+.gyd-booking .gydb-link-btn:active { background: none !important; color: var(--gyd-red-dark) !important; text-decoration: underline !important; }
+
+/* ---------- Grids ---------- */
+.gyd-booking .gydb-card-grid { display: grid; gap: 24px; }
+.gyd-booking .gydb-mentor-grid { display: grid; gap: 24px; margin-top: 8px; }
+.gyd-booking .gydb-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.gyd-booking .gydb-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.gyd-booking .gydb-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* ============================================================
+   PROGRAMME CARDS
+   ============================================================ */
+.gyd-booking .gydb-program-card {
+  background: var(--gyd-white); border: 1px solid var(--gyd-line); border-radius: var(--gyd-radius);
+  overflow: hidden; transition: all 0.25s ease; display: flex; flex-direction: column;
+}
+.gyd-booking .gydb-program-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(10,37,64,0.08); border-color: var(--gyd-red); }
+.gyd-booking .gydb-pick-program { cursor: pointer; }
+.gyd-booking .gydb-pick-program:focus-visible { outline: 3px solid var(--gyd-gold); outline-offset: 2px; }
+.gyd-booking .gydb-card-img {
+  aspect-ratio: 16 / 10; background: linear-gradient(135deg, var(--gyd-cream-2), var(--gyd-line));
+  background-size: cover; background-position: center; position: relative;
+}
+.gyd-booking .gydb-img-label {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-family: var(--gyd-display); font-size: 11px; color: var(--gyd-muted); letter-spacing: 0.25em;
+}
+
+/* Card body: explicit padding + vertical rhythm */
+.gyd-booking .gydb-card-body {
+  display: flex !important; flex-direction: column;
+  flex: 1;
+  padding: 24px 24px 26px !important;
+  margin: 0 !important;
+}
+.gyd-booking .gydb-card-num {
+  font-family: var(--gyd-display); font-size: 13px; font-weight: 700;
+  color: var(--gyd-red); letter-spacing: 0.1em; line-height: 1.2;
+  margin: 0 0 10px !important; padding: 0 !important;
+}
+.gyd-booking .gydb-card-body h4 { margin: 0 0 8px !important; font-size: 20px !important; line-height: 1.25 !important; }
+.gyd-booking .gydb-card-tagline {
+  font-family: var(--gyd-display); font-size: 12px; font-weight: 600;
+  color: var(--gyd-navy); letter-spacing: 0.05em; line-height: 1.4; text-transform: uppercase;
+  margin: 0 0 20px !important; padding: 0 !important;
+}
+.gyd-booking .gydb-card-link,
+.gyd-booking .gydb-card-link:visited {
+  display: inline-block; align-self: flex-start;
+  margin: auto 0 0 !important; padding: 0 !important;
+  color: var(--gyd-red) !important;
+  font-family: var(--gyd-display) !important; font-size: 14px !important; font-weight: 600 !important;
+  line-height: 1.4 !important; text-decoration: none !important; background: none !important;
+}
+.gyd-booking .gydb-card-link:hover,
+.gyd-booking .gydb-card-link:focus,
+.gyd-booking .gydb-card-link:active { color: var(--gyd-red-dark) !important; text-decoration: underline !important; }
+
+/* ---------- Programme rows ---------- */
+.gyd-booking .gydb-program-row { display: grid; grid-template-columns: 90px 1fr auto; gap: 28px; align-items: center; padding: 36px 0; border-bottom: 1px solid var(--gyd-line); }
+.gyd-booking .gydb-program-row:last-child { border-bottom: none; }
+.gyd-booking .gydb-big-num { font-family: var(--gyd-display); font-size: 64px; font-weight: 700; color: var(--gyd-red); line-height: 1; letter-spacing: -0.03em; }
+.gyd-booking .gydb-program-row.gydb-alt .gydb-big-num { color: var(--gyd-gold); }
+.gyd-booking .gydb-prog-category { font-family: var(--gyd-display); font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gyd-muted); margin-bottom: 6px; }
+.gyd-booking .gydb-row-body h3 { margin-bottom: 6px !important; }
+.gyd-booking .gydb-tagline { font-family: var(--gyd-display); font-size: 14px; font-weight: 600; color: var(--gyd-navy); letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* ============================================================
+   MENTOR CARDS
+   ============================================================ */
+.gyd-booking .gydb-mentor-card {
+  background: var(--gyd-white); border: 1px solid var(--gyd-line); border-radius: var(--gyd-radius);
+  padding: 28px 24px 24px !important; text-align: center; transition: all 0.25s;
+  display: flex; flex-direction: column; align-items: center;
+}
+.gyd-booking .gydb-mentor-card:hover { border-color: var(--gyd-red); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(10,37,64,0.06); }
+.gyd-booking .gydb-mentor-photo {
+  width: 120px; height: 120px; border-radius: 50%; background: var(--gyd-cream-2);
+  margin: 0 auto 16px; position: relative; overflow: hidden; border: 3px solid var(--gyd-cream);
+  background-size: cover; background-position: center; flex-shrink: 0;
+}
+.gyd-booking .gydb-photo-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: var(--gyd-display); font-size: 10px; color: var(--gyd-muted); letter-spacing: 0.2em; }
+.gyd-booking .gydb-mentor-role { font-family: var(--gyd-display); font-size: 12px; color: var(--gyd-red); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+.gyd-booking .gydb-mentor-bio { font-size: 13px; color: var(--gyd-muted); margin: 0 0 18px; }
+.gyd-booking .gydb-mentor-card .gydb-btn { margin-top: auto; }
+.gyd-booking .gydb-mentors-head { margin-top: 8px; margin-bottom: 20px; }
+
+/* ---------- Step flow (also a live progress tracker) ---------- */
+.gyd-booking .gydb-step-flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; counter-reset: gydstep; margin: 24px 0 40px; }
+.gyd-booking .gydb-step { background: var(--gyd-white); border: 1px solid var(--gyd-line); border-radius: var(--gyd-radius); padding: 24px !important; counter-increment: gydstep; transition: border-color 0.2s, box-shadow 0.2s, opacity 0.2s; }
+.gyd-booking .gydb-step::before { content: counter(gydstep, decimal-leading-zero); font-family: var(--gyd-display); font-size: 36px; font-weight: 700; color: var(--gyd-red); line-height: 1; margin-bottom: 12px; display: block; }
+.gyd-booking .gydb-step p { font-size: 13px; color: var(--gyd-muted); margin: 0; }
+/* States set by the script as the visitor moves through the booking */
+.gyd-booking .gydb-step.is-upcoming { opacity: 0.55; }
+.gyd-booking .gydb-step.is-active { border-color: var(--gyd-red); box-shadow: 0 0 0 3px rgba(228,30,32,0.10); }
+.gyd-booking .gydb-step.is-done { border-color: var(--gyd-navy); }
+.gyd-booking .gydb-step.is-done::before { content: "\2713"; color: var(--gyd-navy); }
+
+/* Compact tracker (popup): one row, number + title, no description */
+.gyd-booking .gydb-step-flow.gydb-steps-compact { gap: 10px; margin: 0 0 24px; padding-right: 44px; }
+.gyd-booking .gydb-steps-compact .gydb-step { display: flex; align-items: center; gap: 10px; padding: 10px 14px !important; }
+.gyd-booking .gydb-steps-compact .gydb-step::before { font-size: 20px; margin: 0; flex-shrink: 0; }
+.gyd-booking .gydb-steps-compact .gydb-step h5 { margin: 0 !important; font-size: 13px !important; line-height: 1.2 !important; }
+.gyd-booking .gydb-steps-compact .gydb-step p { display: none; }
+
+/* ---------- Programme information (what the programme is about) ---------- */
+.gyd-booking .gydb-sel-prog { background: var(--gyd-white); border: 1px solid var(--gyd-line); border-left: 4px solid var(--gyd-red); border-radius: 8px; padding: 22px 24px !important; margin-bottom: 28px; }
+.gyd-booking .gydb-sel-label { font-family: var(--gyd-display); font-size: 11px; letter-spacing: 0.15em; color: var(--gyd-red); text-transform: uppercase; margin-bottom: 8px; }
+.gyd-booking .gydb-sel-prog h4 { margin: 0 0 6px !important; font-size: 22px !important; }
+.gyd-booking .gydb-sel-category { font-family: var(--gyd-display); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gyd-muted); margin-bottom: 4px; }
+.gyd-booking .gydb-sel-tagline { font-family: var(--gyd-display); font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gyd-navy); margin-bottom: 12px; }
+.gyd-booking .gydb-sel-about { border-top: 1px solid var(--gyd-line); margin-top: 14px; padding-top: 14px; }
+.gyd-booking .gydb-sel-about h5 { margin: 0 0 8px !important; font-size: 13px !important; letter-spacing: 0.08em !important; text-transform: uppercase !important; color: var(--gyd-red) !important; }
+.gyd-booking .gydb-sel-about p { font-size: 15px; color: var(--gyd-ink); margin: 0 0 10px; }
+.gyd-booking .gydb-sel-about p:last-child { margin-bottom: 0; }
+
+.gyd-booking .gydb-change-prog { margin: 24px 0 0; }
+
+/* ============================================================
+   BOOKING FORM
+   ============================================================ */
+.gyd-booking .gydb-back { margin: 0 0 16px; }
+.gyd-booking .gydb-form-card { background: var(--gyd-white); border: 1px solid var(--gyd-line); border-radius: var(--gyd-radius); padding: 32px !important; max-width: 680px; }
+
+/* Schedule screen: programme info + mentor photo/bio beside the form.
+   Flex-wrap (not media queries) so it also stacks inside narrow columns. */
+.gyd-booking .gydb-schedule-layout { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start; }
+.gyd-booking .gydb-schedule-side { flex: 1 1 280px; min-width: 0; }
+.gyd-booking .gydb-schedule-main { flex: 2 1 400px; min-width: 0; }
+.gyd-booking .gydb-schedule-main .gydb-form-card { max-width: none; }
+.gyd-booking .gydb-schedule-side .gydb-sel-prog { margin-bottom: 20px; }
+
+.gyd-booking .gydb-mentor-profile { background: var(--gyd-white); border: 1px solid var(--gyd-line); border-radius: var(--gyd-radius); padding: 24px !important; text-align: center; }
+.gyd-booking .gydb-profile-photo { width: 112px; height: 112px; border-radius: 50%; margin: 0 auto 14px; border: 3px solid var(--gyd-cream); background: var(--gyd-cream-2) center/cover no-repeat; }
+.gyd-booking .gydb-profile-name { margin: 0 0 4px !important; }
+.gyd-booking .gydb-profile-role { font-family: var(--gyd-display); font-size: 12px; color: var(--gyd-red); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+.gyd-booking .gydb-profile-bio { font-size: 14px; color: var(--gyd-muted); margin: 0; }
+
+.gyd-booking .gydb-form-head { padding-bottom: 16px; margin-bottom: 22px; border-bottom: 1px solid var(--gyd-line); }
+.gyd-booking .gydb-form-head h3 { margin: 0 0 4px !important; }
+.gyd-booking .gydb-form-sub { font-size: 14px; color: var(--gyd-muted); margin: 0; }
+
+.gyd-booking .gydb-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.gyd-booking .gydb-form-field { margin: 0 0 18px; }
+
+.gyd-booking .gydb-form-field label {
+  display: block !important;
+  font-family: var(--gyd-display) !important; font-weight: 500 !important; font-size: 13px !important;
+  line-height: 1.3 !important; color: var(--gyd-navy) !important;
+  margin: 0 0 6px !important; padding: 0 !important; vertical-align: baseline;
+}
+.gyd-booking .gydb-req { color: var(--gyd-red); }
+
+.gyd-booking .gydb-form-field input,
+.gyd-booking .gydb-form-field textarea {
+  display: block;
+  width: 100% !important; height: auto !important; margin: 0 !important;
+  padding: 12px 14px !important;
+  border: 1px solid var(--gyd-line) !important; border-radius: 6px !important;
+  font-family: var(--gyd-body) !important; font-size: 15px !important; line-height: 1.4 !important;
+  background: var(--gyd-cream) !important; color: var(--gyd-ink) !important;
+  box-shadow: none !important;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+.gyd-booking .gydb-form-field input:focus,
+.gyd-booking .gydb-form-field textarea:focus {
+  outline: none !important;
+  border-color: var(--gyd-red) !important; background: var(--gyd-white) !important;
+  box-shadow: 0 0 0 3px rgba(228,30,32,0.12) !important;
+}
+.gyd-booking .gydb-form-field textarea { min-height: 110px; resize: vertical; }
+.gyd-booking .gydb-form-field input.gydb-invalid,
+.gyd-booking .gydb-form-field textarea.gydb-invalid { border-color: var(--gyd-red) !important; background: #fff5f5 !important; }
+
+/* ---------- Time slots ---------- */
+.gyd-booking .gydb-slots { display: flex; flex-wrap: wrap; gap: 10px; min-height: 44px; align-items: center; }
+.gyd-booking .gydb-slots-hint { color: var(--gyd-muted); font-size: 14px; margin: 0; }
+.gyd-booking .gydb-slot {
+  display: inline-block !important;
+  font-family: var(--gyd-display) !important; font-weight: 500 !important; font-size: 14px !important;
+  line-height: 1.2 !important; letter-spacing: 0 !important; text-transform: none !important;
+  padding: 10px 16px !important; margin: 0;
+  border: 1px solid var(--gyd-line) !important; border-radius: 6px !important;
+  background: var(--gyd-white) !important; color: var(--gyd-navy) !important;
+  box-shadow: none !important; white-space: nowrap !important; cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+}
+.gyd-booking .gydb-slot:hover,
+.gyd-booking .gydb-slot:focus { border-color: var(--gyd-red) !important; color: var(--gyd-red) !important; background: var(--gyd-white) !important; }
+/* Active must come last: same specificity as :hover, so order decides. */
+.gyd-booking .gydb-slot.gydb-slot-active,
+.gyd-booking .gydb-slot.gydb-slot-active:hover,
+.gyd-booking .gydb-slot.gydb-slot-active:focus { background: var(--gyd-navy) !important; border-color: var(--gyd-navy) !important; color: var(--gyd-white) !important; }
+
+.gyd-booking .gydb-form-error { background: #fff5f5; border: 1px solid var(--gyd-red); color: var(--gyd-red-dark); padding: 12px 14px; border-radius: 6px; font-size: 14px; margin-bottom: 16px; }
+
+/* ---------- Success ---------- */
+.gyd-booking .gydb-success-card { background: var(--gyd-white); border: 1px solid var(--gyd-line); border-radius: var(--gyd-radius); padding: 48px 32px !important; max-width: 560px; text-align: center; }
+.gyd-booking .gydb-success-check { width: 64px; height: 64px; margin: 0 auto 20px; border-radius: 50%; background: var(--gyd-navy); color: var(--gyd-white); font-size: 32px; display: flex; align-items: center; justify-content: center; }
+.gyd-booking .gydb-success-ref { font-family: var(--gyd-display); font-weight: 600; color: var(--gyd-navy); }
+.gyd-booking .gydb-success-card .gydb-btn { margin-top: 16px; }
+
+/* ---------- Notices + spinner ---------- */
+.gyd-booking .gydb-notice { background: var(--gyd-cream); border: 1px solid var(--gyd-line); border-radius: 8px; padding: 16px 18px; color: var(--gyd-muted); font-size: 14px; }
+/* Hidden by default; only ever shown while a request is in flight. */
+.gyd-booking .gydb-loading { display: none; position: fixed; inset: 0; background: rgba(10,37,64,0.35); align-items: center; justify-content: center; z-index: 100001; }
+.gyd-booking .gydb-loading.is-active { display: flex; }
+.gyd-booking .gydb-loading[hidden] { display: none !important; }
+.gyd-booking .gydb-spinner { width: 42px; height: 42px; border: 4px solid rgba(255,255,255,0.4); border-top-color: var(--gyd-gold); border-radius: 50%; animation: gydb-spin 0.8s linear infinite; }
+@keyframes gydb-spin { to { transform: rotate(360deg); } }
+
+.gyd-booking .gydb-stage { margin-top: 8px; }
+
+/* ============================================================
+   POPUP MODAL
+   ============================================================ */
+body.gydb-modal-open { overflow: hidden; }
+.gyd-booking.gydb-modal-overlay {
+  position: fixed; inset: 0; z-index: 100000;
+  background: rgba(10,37,64,0.55);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 40px 16px; overflow-y: auto;
+}
+.gyd-booking .gydb-modal {
+  position: relative; background: var(--gyd-cream);
+  width: 100%; max-width: 980px; margin: auto;
+  border-radius: var(--gyd-radius); box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+  padding: 36px 32px 32px !important;
+}
+.gyd-booking .gydb-modal-close {
+  position: absolute; top: 12px; right: 14px;
+  display: flex !important; align-items: center; justify-content: center;
+  width: 36px !important; height: 36px !important; padding: 0 !important; margin: 0;
+  border-radius: 50% !important; font-size: 24px !important; line-height: 1 !important; font-weight: 400 !important;
+  color: var(--gyd-navy) !important; background: var(--gyd-white) !important;
+  border: 1px solid var(--gyd-line) !important; box-shadow: none !important;
+  cursor: pointer; transition: all 0.15s;
+}
+.gyd-booking .gydb-modal-close:focus { background: var(--gyd-white) !important; color: var(--gyd-navy) !important; border-color: var(--gyd-line) !important; }
+.gyd-booking .gydb-modal-close:hover { background: var(--gyd-red) !important; color: var(--gyd-white) !important; border-color: var(--gyd-red) !important; }
+.gyd-booking .gydb-modal .gydb-stage { margin-top: 0; }
+.gyd-booking .gydb-modal .gydb-success-card { border: none; max-width: none; text-align: center; padding: 24px 0 !important; }
+.gyd-booking .gydb-modal .gydb-mentor-grid { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .gyd-booking .gydb-cols-3,
+  .gyd-booking .gydb-cols-4 { grid-template-columns: repeat(2, 1fr); }
+  .gyd-booking .gydb-step-flow { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 680px) {
+  .gyd-booking .gydb-cols-2,
+  .gyd-booking .gydb-cols-3,
+  .gyd-booking .gydb-cols-4 { grid-template-columns: 1fr; }
+  .gyd-booking .gydb-step-flow { grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0 28px; }
+  .gyd-booking .gydb-step { padding: 14px !important; }
+  .gyd-booking .gydb-step::before { font-size: 24px; margin-bottom: 6px; }
+  .gyd-booking .gydb-step p { display: none; }
+  .gyd-booking .gydb-program-row { grid-template-columns: 1fr; gap: 12px; padding: 28px 0; }
+  .gyd-booking .gydb-big-num { font-size: 46px; }
+  .gyd-booking .gydb-form-row { grid-template-columns: 1fr; }
+  .gyd-booking .gydb-form-card { padding: 22px !important; }
+  .gyd-booking.gydb-modal-overlay { padding: 20px 10px; }
+  .gyd-booking .gydb-modal { padding: 28px 18px 22px !important; }
+  .gyd-booking .gydb-modal .gydb-mentor-grid { grid-template-columns: 1fr; }
+  .gyd-booking .gydb-step-flow.gydb-steps-compact { grid-template-columns: repeat(2, 1fr); padding-right: 0; margin-top: 28px; }
+}
